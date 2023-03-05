@@ -13,7 +13,7 @@
     "url": "https://github.com/luwes/selectmenu-polyfill/issues"
   },
   "scripts": {
-    "lint": "npx eslint *.js",
+    "lint": "npx eslint src/*.js",
     "test": "wet run",
     "dev": "wet serve"
   },
