@@ -1,0 +1,46 @@
+{
+  "name": "selectmenu-polyfill",
+  "version": "0.0.0",
+  "description": "Polyfill for the selectmenu element",
+  "type": "module",
+  "main": "src/selectmenu.js",
+  "files": [],
+  "repository": "luwes/selectmenu-polyfill",
+  "author": "Wesley Luyten <me@wesleyluyten.com> (https://wesleyluyten.com)",
+  "license": "MIT",
+  "homepage": "https://github.com/luwes/selectmenu-polyfill#readme",
+  "bugs": {
+    "url": "https://github.com/luwes/selectmenu-polyfill/issues"
+  },
+  "scripts": {
+    "lint": "npx eslint *.js",
+    "test": "wet run",
+    "dev": "wet serve"
+  },
+  "devDependencies": {
+    "wet-run": "^0.0.7"
+  },
+  "eslintConfig": {
+    "root": true,
+    "globals": {
+      "globalThis": "writable"
+    },
+    "env": {
+      "browser": true,
+      "es6": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    }
+  },
+  "keywords": [
+    "selectmenu",
+    "polyfill",
+    "web component",
+    "custom element"
+  ]
+}
