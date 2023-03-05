@@ -105,19 +105,37 @@ class SelectMenuPolyfill {
     selectmenu.addEventListener('click', this.#handleClick);
     document.addEventListener('click', this.#handleBlur);
 
-    this.#defaultSlot.addEventListener('slotchange', this.#handleSlot);
+    this.#defaultSlot.addEventListener('slotchange', this.#handleDefaultSlot);
+    this.#listboxSlot.addEventListener('slotchange', this.#handleListboxSlot);
+  }
+
+  #select() {
+    const selected = this.#options
+      .find(el => el.hasAttribute('selected')) ?? this.#options[0];
+
+    this.#selectOption(selected);
   }
 
   #selectOption(option) {
     this.#selectedValue.textContent = option.value;
   }
 
-  #handleSlot = () => {
-    this.#options = this.#defaultSlot.assignedElements();
+  #handleDefaultSlot = () => {
+    this.#options = [...this.#selectmenu.querySelectorAll('option')];
+    this.#select();
+  }
 
-    const selected = this.#options.find(el => el.hasAttribute('selected')) ?? this.#options[0];
+  #handleListboxSlot = () => {
+    this.#options = [...this.#selectmenu.querySelectorAll('option')];
+    this.#select();
+  }
 
-    this.#selectOption(selected);
+  get #buttonSlot() {
+    return this.#selectmenu.shadowRoot.querySelector('slot[name=button]');
+  }
+
+  get #listboxSlot() {
+    return this.#selectmenu.shadowRoot.querySelector('slot[name=listbox]');
   }
 
   get #defaultSlot() {
@@ -125,7 +143,7 @@ class SelectMenuPolyfill {
   }
 
   get #selectedValue() {
-    let selectedValue = this.#selectmenu.querySelector(':scope > [behavior=selected-value]');
+    let selectedValue = this.#selectmenu.querySelector('[behavior=selected-value]');
     if (!selectedValue) {
       selectedValue = this.#selectmenu.shadowRoot.querySelector('[behavior=selected-value]');
     }
@@ -133,7 +151,7 @@ class SelectMenuPolyfill {
   }
 
   get #button() {
-    let button = this.#selectmenu.querySelector(':scope > [behavior=button]');
+    let button = this.#selectmenu.querySelector('[behavior=button]');
     if (!button) {
       button = this.#selectmenu.shadowRoot.querySelector('[behavior=button]');
     }
@@ -141,7 +159,7 @@ class SelectMenuPolyfill {
   }
 
   get #listbox() {
-    let listbox = this.#selectmenu.querySelector(':scope > [behavior=listbox]');
+    let listbox = this.#selectmenu.querySelector('[behavior=listbox]');
     if (!listbox) {
       listbox = this.#selectmenu.shadowRoot.querySelector('[behavior=listbox]');
     }

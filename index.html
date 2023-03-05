@@ -1,10 +1,92 @@
 <!doctype html>
 
 <title>selectmenu polyfill</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+    line-height: 1.4;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 10px;
+    word-wrap: break-word;
+    color: #363636;
+    color: var(--text-main);
+    background: #fff;
+    background: var(--background-body);
+    text-rendering: optimizeLegibility;
+  }
+</style>
+
 <script type="module" src="src/selectmenu.js"></script>
+
+<h1>SelectMenu Polyfill</h1>
+
+
+<h3>Default behavior</h3>
 
 <selectmenu>
   <option>Option 1</option>
   <option>Option 2</option>
   <option>Option 3</option>
 </selectmenu>
+
+
+<h3>Styling parts of the control</h3>
+
+<style>
+  .my-select-menu::part(button) {
+    color: white;
+    background-color: #f00;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .my-select-menu::part(listbox) {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid red;
+    border-radius: 5px;
+  }
+</style>
+<selectmenu class="my-select-menu">
+  <option>Option 1</option>
+  <option>Option 2</option>
+  <option>Option 3</option>
+</selectmenu>
+
+
+<h3>Use your own markup</h3>
+
+<style>
+  .my-custom-select [slot='button'] {
+    display: flex;
+    align-content: center;
+  }
+  .my-custom-select button {
+    padding: 5px;
+    border: none;
+    background: #f06;
+    border-radius: 5px 0 0 5px;
+    color: white;
+    font-weight: bold;
+  }
+  .my-custom-select .label {
+    padding: 5px;
+    border: 1px solid #f06;
+    border-radius: 0 5px 5px 0;
+  }
+</style>
+<selectmenu class="my-custom-select">
+  <div slot="button">
+    <button behavior="button">Open</button>
+    <span class="label">Choose an option</span>
+  </div>
+  <option>Option 1</option>
+  <option>Option 2</option>
+  <option>Option 3</option>
+</selectmenu>
+
+<br>
+<br>
+
+<a href="extended.html">Extended</a>
