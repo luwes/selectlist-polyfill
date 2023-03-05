@@ -51,6 +51,20 @@ template.innerHTML = html`
         background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAyMCAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj5cCiAgPHBhdGggZD0iTTQgNiBMMTAgMTIgTCAxNiA2IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPlwKPC9zdmc+);
       }*/
 
+    [popover] {
+      position: fixed;
+      z-index: 2147483647;
+      inset: 0;
+      padding: 0.25em;
+      width: fit-content;
+      height: fit-content;
+      border: solid;
+      background: canvas;
+      color: canvastext;
+      overflow: auto;
+      margin: auto;
+    }
+
     [part=listbox] {
       box-shadow: rgba(0, 0, 0, 0.13) 0px 12.8px 28.8px, rgba(0, 0, 0, 0.11) 0px 0px 9.2px;
       box-sizing: border-box;
@@ -86,23 +100,22 @@ template.innerHTML = html`
     </button>
   </slot>
   <slot name="listbox">
-    <div hidden part="listbox" behavior="listbox">
+    <div popover hidden part="listbox" behavior="listbox">
       <slot></slot>
     </div>
   </slot>
 `;
 
-class SelectMenuPolyfill {
-  #selectmenu;
+class HTMLSelectMenuElement extends globalThis.HTMLElement {
   #options;
 
-  constructor(selectmenu) {
-    this.#selectmenu = selectmenu;
+  constructor() {
+    super();
 
-    selectmenu.attachShadow({ mode: 'open' });
-    selectmenu.shadowRoot.append(template.content.cloneNode(true));
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.append(template.content.cloneNode(true));
 
-    selectmenu.addEventListener('click', this.#handleClick);
+    this.addEventListener('click', this.#handleClick);
     document.addEventListener('click', this.#handleBlur);
 
     this.#defaultSlot.addEventListener('slotchange', this.#handleDefaultSlot);
@@ -121,47 +134,47 @@ class SelectMenuPolyfill {
   }
 
   #handleDefaultSlot = () => {
-    this.#options = [...this.#selectmenu.querySelectorAll('option')];
+    this.#options = [...this.querySelectorAll('option')];
     this.#select();
   }
 
   #handleListboxSlot = () => {
-    this.#options = [...this.#selectmenu.querySelectorAll('option')];
+    this.#options = [...this.querySelectorAll('option')];
     this.#select();
   }
 
   get #buttonSlot() {
-    return this.#selectmenu.shadowRoot.querySelector('slot[name=button]');
+    return this.shadowRoot.querySelector('slot[name=button]');
   }
 
   get #listboxSlot() {
-    return this.#selectmenu.shadowRoot.querySelector('slot[name=listbox]');
+    return this.shadowRoot.querySelector('slot[name=listbox]');
   }
 
   get #defaultSlot() {
-    return this.#selectmenu.shadowRoot.querySelector('slot:not([name])');
+    return this.shadowRoot.querySelector('slot:not([name])');
   }
 
   get #selectedValue() {
-    let selectedValue = this.#selectmenu.querySelector('[behavior=selected-value]');
+    let selectedValue = this.querySelector('[behavior=selected-value]');
     if (!selectedValue) {
-      selectedValue = this.#selectmenu.shadowRoot.querySelector('[behavior=selected-value]');
+      selectedValue = this.shadowRoot.querySelector('[behavior=selected-value]');
     }
     return selectedValue;
   }
 
   get #button() {
-    let button = this.#selectmenu.querySelector('[behavior=button]');
+    let button = this.querySelector('[behavior=button]');
     if (!button) {
-      button = this.#selectmenu.shadowRoot.querySelector('[behavior=button]');
+      button = this.shadowRoot.querySelector('[behavior=button]');
     }
     return button;
   }
 
   get #listbox() {
-    let listbox = this.#selectmenu.querySelector('[behavior=listbox]');
+    let listbox = this.querySelector('[behavior=listbox]');
     if (!listbox) {
-      listbox = this.#selectmenu.shadowRoot.querySelector('[behavior=listbox]');
+      listbox = this.shadowRoot.querySelector('[behavior=listbox]');
     }
     return listbox;
   }
@@ -187,15 +200,18 @@ class SelectMenuPolyfill {
 
   #handleBlur = (event) => {
 
-    if (event.composedPath().some(el => el === this.#selectmenu)) return;
+    if (event.composedPath().some(el => el === this)) return;
 
     this.#listbox.setAttribute('hidden',  '');
   }
 }
 
 if (!globalThis.HTMLSelectMenuElement) {
-  class HTMLSelectMenuElement extends globalThis.HTMLElement {}
   globalThis.HTMLSelectMenuElement = HTMLSelectMenuElement;
+
+  if (!globalThis.customElements.get('select-menu')) {
+    globalThis.customElements.define('select-menu', HTMLSelectMenuElement);
+  }
 
   observeElement('selectmenu', document);
 }
@@ -203,9 +219,17 @@ if (!globalThis.HTMLSelectMenuElement) {
 function observeElement(type, rootNode) {
 
   const upgrade = (node) => {
-    if (node.localName !== type && !node.shadowRoot) return;
+    if (node.localName !== type) return;
 
-    new SelectMenuPolyfill(node);
+    const childNodes = [...node.childNodes];
+    const attributes = [...node.attributes];
+    // Firefox and Safari doesn't allow creating a shadow DOM
+    // on random generated tags like `selectmenu` so we replace `selectmenu`
+    // with a custom element `select-menu`.
+    const replacement = document.createElement('select-menu');
+    for (let { name, value } of attributes) replacement.setAttribute(name, value);
+    replacement.append(...childNodes);
+    node.replaceWith(replacement);
   }
 
   const observer = new MutationObserver((mutationsList) => {
