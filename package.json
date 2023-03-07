@@ -15,9 +15,11 @@
   "scripts": {
     "lint": "npx eslint src/*.js",
     "test": "wet run",
-    "dev": "wet serve"
+    "dev": "wet serve & npm run build -- --watch",
+    "build": "esbuild src/polyfill.js --global-name=SelectMenuPolyfill --outdir=dist --bundle --minify-syntax --tree-shaking=true"
   },
   "devDependencies": {
+    "esbuild": "^0.17.11",
     "wet-run": "^0.0.7"
   },
   "eslintConfig": {

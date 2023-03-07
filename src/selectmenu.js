@@ -1,10 +1,49 @@
 
 const html = (raw, ...keys) => String.raw({ raw }, ...keys);
 
-const template = document.createElement('template');
+const popoverStyles = `
+  @supports not selector([popover]:open) {
 
+    [popover] {
+      position: fixed;
+      z-index: 2147483647;
+      inset: 0;
+      padding: 0.25em;
+      width: fit-content;
+      height: fit-content;
+      border: solid;
+      background: canvas;
+      color: canvastext;
+      overflow: auto;
+      margin: auto;
+    }
+
+    [popover]:not(.\\:open) {
+      display: none;
+    }
+  }
+`;
+
+const headTemplate = document.createElement('template');
+headTemplate.innerHTML = html`
+  <style>
+    ${popoverStyles}
+
+    x-selectmenu [behavior=listbox] {
+      min-block-size: 1lh;
+      margin: 0px;
+      inset: auto;
+    }
+  </style>
+`;
+
+document.head.append(headTemplate.content.cloneNode(true));
+
+const template = document.createElement('template');
 template.innerHTML = html`
   <style>
+    ${popoverStyles}
+
     :host {
       display: inline-block;
     }
@@ -23,13 +62,6 @@ template.innerHTML = html`
       border-radius: 2px;
     }
 
-/*    @media (prefers-color-scheme: dark) {
-      [part=button] {
-        background-color: rgb(59, 59, 59);
-        border-color: rgb(133, 133, 133);
-      }
-    }*/
-
     [part=marker] {
       background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAyMCAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj5cCiAgPHBhdGggZD0iTTQgNiBMMTAgMTIgTCAxNiA2IiBzdHJva2U9IldpbmRvd1RleHQiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPlwKPC9zdmc+);
       background-origin: content-box;
@@ -46,32 +78,10 @@ template.innerHTML = html`
       outline: none;
     }
 
-/*    @media (prefers-color-scheme: dark) {
-      [part=marker] {
-        background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAyMCAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj5cCiAgPHBhdGggZD0iTTQgNiBMMTAgMTIgTCAxNiA2IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPlwKPC9zdmc+);
-      }*/
-
-    [popover] {
-      position: fixed;
-      z-index: 2147483647;
-      inset: 0;
-      padding: 0.25em;
-      width: fit-content;
-      height: fit-content;
-      border: solid;
-      background: canvas;
-      color: canvastext;
-      overflow: auto;
-      margin: auto;
-    }
-
     [part=listbox] {
       box-shadow: rgba(0, 0, 0, 0.13) 0px 12.8px 28.8px, rgba(0, 0, 0, 0.11) 0px 0px 9.2px;
       box-sizing: border-box;
-      min-inline-size: anchor-size(self-inline);
       min-block-size: 1lh;
-      anchor-scroll: implicit;
-      position-fallback: -internal-selectmenu-listbox-default-fallbacks;
       border-width: 1px;
       border-style: solid;
       border-color: rgba(0, 0, 0, 0.15);
@@ -81,12 +91,6 @@ template.innerHTML = html`
       padding: 4px;
       margin: 0px;
       inset: auto;
-    }
-
-    ::slotted(option:hover) {
-      background-color: lightgray;
-      cursor: default;
-      user-select: none;
     }
   </style>
   <slot name="button">
@@ -100,13 +104,13 @@ template.innerHTML = html`
     </button>
   </slot>
   <slot name="listbox">
-    <div popover hidden part="listbox" behavior="listbox">
+    <div popover part="listbox" behavior="listbox" role="listbox">
       <slot></slot>
     </div>
   </slot>
 `;
 
-class HTMLSelectMenuElement extends globalThis.HTMLElement {
+class SelectMenuElement extends globalThis.HTMLElement {
   #options;
 
   constructor() {
@@ -130,16 +134,16 @@ class HTMLSelectMenuElement extends globalThis.HTMLElement {
   }
 
   #selectOption(option) {
-    this.#selectedValue.textContent = option.value;
+    this.#selectedValue.textContent = option?.value;
   }
 
   #handleDefaultSlot = () => {
-    this.#options = [...this.querySelectorAll('option')];
+    this.#options = [...this.querySelectorAll('x-option')];
     this.#select();
   }
 
   #handleListboxSlot = () => {
-    this.#options = [...this.querySelectorAll('option')];
+    this.#options = [...this.querySelectorAll('x-option')];
     this.#select();
   }
 
@@ -180,20 +184,20 @@ class HTMLSelectMenuElement extends globalThis.HTMLElement {
   }
 
   #handleClick = (event) => {
+    console.log(event.composedPath());
 
     let selected;
 
     // Open / Close
     if (event.composedPath().some(el => el === this.#button)) {
-      if (this.#listbox.hasAttribute('hidden')) {
-        this.#listbox.removeAttribute('hidden');
-      } else {
-        this.#listbox.setAttribute('hidden',  '');
-      }
+
+      this.#listbox.style.width = `${this.offsetWidth}px`;
+      this.#listbox.classList.toggle(':open');
+
     } else if (event.composedPath().some(el => this.#options.includes(el) && (selected = el))) {
 
       this.#selectOption(selected);
-      this.#listbox.setAttribute('hidden',  '');
+      this.#listbox.classList.remove(':open');
     }
 
   }
@@ -202,49 +206,12 @@ class HTMLSelectMenuElement extends globalThis.HTMLElement {
 
     if (event.composedPath().some(el => el === this)) return;
 
-    this.#listbox.setAttribute('hidden',  '');
+    this.#listbox.classList.remove(':open');
   }
 }
 
-if (!globalThis.HTMLSelectMenuElement) {
-  globalThis.HTMLSelectMenuElement = HTMLSelectMenuElement;
-
-  if (!globalThis.customElements.get('select-menu')) {
-    globalThis.customElements.define('select-menu', HTMLSelectMenuElement);
-  }
-
-  observeElement('selectmenu', document);
+if (!globalThis.customElements.get('x-selectmenu')) {
+  globalThis.customElements.define('x-selectmenu', SelectMenuElement);
 }
 
-function observeElement(type, rootNode) {
-
-  const upgrade = (node) => {
-    if (node.localName !== type) return;
-
-    const childNodes = [...node.childNodes];
-    const attributes = [...node.attributes];
-    // Firefox and Safari doesn't allow creating a shadow DOM
-    // on random generated tags like `selectmenu` so we replace `selectmenu`
-    // with a custom element `select-menu`.
-    const replacement = document.createElement('select-menu');
-    for (let { name, value } of attributes) replacement.setAttribute(name, value);
-    replacement.append(...childNodes);
-    node.replaceWith(replacement);
-  }
-
-  const observer = new MutationObserver((mutationsList) => {
-    for (let mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach(upgrade);
-      }
-    }
-  });
-
-  observer.observe(rootNode, {
-    attributes: true,
-    childList: true,
-    subtree: true,
-  });
-
-  rootNode.querySelectorAll(type).forEach(upgrade);
-}
+export default SelectMenuElement;
