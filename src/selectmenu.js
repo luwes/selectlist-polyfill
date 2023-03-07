@@ -111,7 +111,8 @@ template.innerHTML = html`
 `;
 
 class SelectMenuElement extends globalThis.HTMLElement {
-  #options;
+  #value = '';
+  #selectedOptions = [];
 
   constructor() {
     super();
@@ -126,25 +127,60 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.#listboxSlot.addEventListener('slotchange', this.#handleListboxSlot);
   }
 
-  #select() {
-    const selected = this.#options
-      .find(el => el.hasAttribute('selected')) ?? this.#options[0];
-
-    this.#selectOption(selected);
+  get value() {
+    return this.#value;
   }
 
-  #selectOption(option) {
-    this.#selectedValue.textContent = option?.value;
+  set value(val) {
+    const allOptions = this.options;
+    const value = [val].flat();
+
+    this.#setSelectedOptions(allOptions.filter(el => value.includes(el.value)));
+  }
+
+  get options() {
+    return [...this.querySelectorAll('x-option')];
+  }
+
+  get selectedOptions() {
+    return this.#selectedOptions;
+  }
+
+  #getFirstOption() {
+    return this.querySelector('x-option');
+  }
+
+  #setSelectedOptions(option) {
+    const allOptions = this.options;
+    const newSelectedOptions = [option].flat();
+
+    allOptions.forEach(el => (el.selected = false));
+    newSelectedOptions.forEach(el => (el.selected = true));
+
+    this.#selectionChanged();
+  }
+
+  #selectionChanged() {
+    this.#selectedOptions = this.options.filter(el => el.selected);
+
+    if (this.#selectedOptions.length === 0) {
+      this.#selectedOptions = [this.#getFirstOption()];
+    }
+
+    if (this.multiple) {
+      this.#value = this.#selectedOptions.map(el => el.value);
+    } else {
+      this.#value = this.#selectedOptions[0]?.value ?? '';
+      this.#selectedValue.textContent = this.#value;
+    }
   }
 
   #handleDefaultSlot = () => {
-    this.#options = [...this.querySelectorAll('x-option')];
-    this.#select();
+    this.#selectionChanged();
   }
 
   #handleListboxSlot = () => {
-    this.#options = [...this.querySelectorAll('x-option')];
-    this.#select();
+    this.#selectionChanged();
   }
 
   get #buttonSlot() {
@@ -184,19 +220,18 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   #handleClick = (event) => {
-    console.log(event.composedPath());
-
+    const path = event.composedPath();
     let selected;
 
     // Open / Close
-    if (event.composedPath().some(el => el === this.#button)) {
+    if (path.some(el => el === this.#button)) {
 
       this.#listbox.style.width = `${this.offsetWidth}px`;
       this.#listbox.classList.toggle(':open');
 
-    } else if (event.composedPath().some(el => this.#options.includes(el) && (selected = el))) {
+    } else if (path.some(el => this.options.includes(el) && (selected = el))) {
 
-      this.#selectOption(selected);
+      this.#setSelectedOptions(selected);
       this.#listbox.classList.remove(':open');
     }
 

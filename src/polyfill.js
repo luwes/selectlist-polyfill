@@ -11,6 +11,7 @@ if (!globalThis.HTMLSelectMenuElement) {
     element.replaceWith(convertElementToType(element, `x-selectmenu`));
   });
 
+  // Safari doesn't render <option> content not nested in <select> :(
   observeElement(document, 'option', (element) => {
     if (element.closest('x-selectmenu') || element.closest('selectmenu'))
       element.replaceWith(convertElementToType(element, `x-option`));

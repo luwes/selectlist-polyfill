@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "description": "Polyfill for the selectmenu element",
   "type": "module",
-  "main": "src/selectmenu.js",
-  "files": [],
+  "main": "dist/polyfill.js",
+  "files": [
+    "src",
+    "dist"
+  ],
   "repository": "luwes/selectmenu-polyfill",
   "author": "Wesley Luyten <me@wesleyluyten.com> (https://wesleyluyten.com)",
   "license": "MIT",

@@ -27,16 +27,29 @@ class OptionElement extends globalThis.HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('role'))
+    if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'option');
+    }
   }
 
   get value() {
     return this.getAttribute('value') ?? this.textContent;
   }
 
-  set value(value) {
-    this.setAttribute('value', value);
+  set value(val) {
+    this.setAttribute('value', val);
+  }
+
+  get selected() {
+    return this.hasAttribute('selected');
+  }
+
+  set selected(val) {
+    if (val) {
+      this.setAttribute('selected', '');
+    } else {
+      this.removeAttribute('selected');
+    }
   }
 }
 
