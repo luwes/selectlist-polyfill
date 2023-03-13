@@ -1,0 +1,101 @@
+<!doctype html>
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/super-template"></script>
+<link rel="preload" href="./layout.html" as="fetch" crossorigin>
+
+<title>selectmenu polyfill</title>
+<script src="../dist/polyfill.js"></script>
+
+<template extends="./layout.html">
+  <template block="content">
+    <h3>Default behavior</h3>
+
+    <selectmenu id="pet">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </selectmenu>
+
+    <script>
+      function addOption() {
+        let opt = document.createElement("option");
+        opt.textContent = "Frog";
+        pet.prepend(opt);
+      }
+    </script>
+
+    <button id="btn" onclick="addOption()">Add option</button>
+
+    <selectmenu disabled>
+      <option>Option 1</option>
+      <option selected>Option 2</option>
+      <option>Option 3</option>
+    </selectmenu>
+
+    <selectmenu>
+      <option disabled>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </selectmenu>
+
+
+    <h3>Styling parts of the control</h3>
+
+    <style>
+      .my-select-menu::part(button) {
+        color: white;
+        background-color: #f00;
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .my-select-menu::part(listbox) {
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid red;
+        border-radius: 5px;
+      }
+    </style>
+    <selectmenu class="my-select-menu">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </selectmenu>
+
+
+    <h3>Use your own markup</h3>
+
+    <style>
+      .my-custom-select [slot='button'] {
+        display: flex;
+        align-content: center;
+      }
+      .my-custom-select button {
+        padding: 5px;
+        border: 1px solid #f06;
+        background: #f06;
+        border-radius: 5px 0 0 5px;
+        color: white;
+        font-weight: bold;
+      }
+      .my-custom-select .label {
+        padding: 5px;
+        border: 1px solid #f06;
+        border-left: none;
+        border-radius: 0 5px 5px 0;
+      }
+    </style>
+    <selectmenu class="my-custom-select">
+      <div slot="button">
+        <button behavior="button">Open</button>
+        <span class="label">Choose an option</span>
+      </div>
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </selectmenu>
+
+    <br>
+    <br>
+  </template>
+</template>

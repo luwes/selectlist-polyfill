@@ -22,6 +22,8 @@ if (!globalThis.HTMLSelectMenuElement) {
 export function observeElement(rootNode, type, callback) {
 
   const upgrade = (node) => {
+    rootNode.querySelectorAll?.(type).forEach(callback);
+
     if (node.localName !== type) return;
 
     callback(node);
@@ -36,12 +38,11 @@ export function observeElement(rootNode, type, callback) {
   });
 
   observer.observe(rootNode, {
-    attributes: true,
     childList: true,
     subtree: true,
   });
 
-  rootNode.querySelectorAll(type).forEach(upgrade);
+  rootNode.querySelectorAll(type).forEach(callback);
 }
 
 export function convertElementToType(el, type) {

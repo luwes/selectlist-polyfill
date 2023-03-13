@@ -5,7 +5,7 @@ const popoverStyles = `
   @supports not selector([popover]:open) {
 
     [popover] {
-      position: fixed;
+      position: absolute;
       z-index: 2147483647;
       inset: 0;
       padding: 0.25em;
@@ -46,6 +46,7 @@ template.innerHTML = html`
 
     :host {
       display: inline-block;
+      position: relative;
     }
 
     [part=button] {
@@ -60,6 +61,13 @@ template.innerHTML = html`
       border-color: rgb(118, 118, 118);
       border-image: initial;
       border-radius: 2px;
+    }
+
+    :host([disabled]) [part=button] {
+      background-color: rgba(239, 239, 239, 0.3);
+      color: rgba(16, 16, 16, 0.3);
+      opacity: 0.7;
+      border-color: rgba(118, 118, 118, 0.3);
     }
 
     [part=marker] {
@@ -111,9 +119,6 @@ template.innerHTML = html`
 `;
 
 class SelectMenuElement extends globalThis.HTMLElement {
-  #value = '';
-  #selectedOptions = [];
-
   constructor() {
     super();
 
@@ -122,20 +127,6 @@ class SelectMenuElement extends globalThis.HTMLElement {
 
     this.addEventListener('click', this.#handleClick);
     document.addEventListener('click', this.#handleBlur);
-
-    this.#defaultSlot.addEventListener('slotchange', this.#handleDefaultSlot);
-    this.#listboxSlot.addEventListener('slotchange', this.#handleListboxSlot);
-  }
-
-  get value() {
-    return this.#value;
-  }
-
-  set value(val) {
-    const allOptions = this.options;
-    const value = [val].flat();
-
-    this.#setSelectedOptions(allOptions.filter(el => value.includes(el.value)));
   }
 
   get options() {
@@ -143,44 +134,104 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   get selectedOptions() {
-    return this.#selectedOptions;
+    return this.options.filter(option => option.selected);
   }
 
-  #getFirstOption() {
-    return this.querySelector('x-option');
+  get selectedIndex() {
+    return this.options.findIndex(option => option.selected);
   }
 
-  #setSelectedOptions(option) {
+  set selectedIndex(val) {
+
+  }
+
+  get value() {
+    return this.options.find(option => option.selected)?.value ?? '';
+  }
+
+  set value(val) {
+
+  }
+
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(val) {
+    if (val) {
+      this.setAttribute('disabled', '');
+    } else {
+      this.removeAttribute('disabled');
+    }
+  }
+
+  get multiple() {
+    return this.hasAttribute('multiple');
+  }
+
+  set multiple(val) {
+    if (val) {
+      this.setAttribute('multiple', '');
+    } else {
+      this.removeAttribute('multiple');
+    }
+  }
+
+  get size() {
+    return 1;
+  }
+
+  set size(val) {
+
+  }
+
+  _optionSelectionChanged(option, selected) {
+    if (selected) {
+      this.#selectOption(option);
+    }
+  }
+
+  #selectOption(option) {
     const allOptions = this.options;
     const newSelectedOptions = [option].flat();
 
-    allOptions.forEach(el => (el.selected = false));
-    newSelectedOptions.forEach(el => (el.selected = true));
+    allOptions.forEach(opt => (opt._setSelectedState(false)));
+    newSelectedOptions.forEach(opt => (opt._setSelectedState(true)));
+
+    this.#selectionChanged();
+  }
+
+  /**
+   * Reset for a selectmenu is the selectedness setting algorithm.
+   * Child Options's that are added and removed request this.
+   * @see https://html.spec.whatwg.org/multipage/form-elements.html#selectedness-setting-algorithm
+   */
+  reset() {
+    let firstOption;
+    let selectedOption;
+
+    for (let option of this.options) {
+      if (option.selected) {
+        if (selectedOption && !this.multiple)
+          selectedOption._setSelectedState(false);
+        option._setSelectedState(true);
+        selectedOption = option;
+      } else {
+        option._setSelectedState(false);
+      }
+
+      if (!firstOption && !option.disabled)
+        firstOption = option;
+    }
+
+    if (!selectedOption && firstOption && !this.multiple && this.size <= 1)
+      firstOption._setSelectedState(true);
 
     this.#selectionChanged();
   }
 
   #selectionChanged() {
-    this.#selectedOptions = this.options.filter(el => el.selected);
-
-    if (this.#selectedOptions.length === 0) {
-      this.#selectedOptions = [this.#getFirstOption()];
-    }
-
-    if (this.multiple) {
-      this.#value = this.#selectedOptions.map(el => el.value);
-    } else {
-      this.#value = this.#selectedOptions[0]?.value ?? '';
-      this.#selectedValue.textContent = this.#value;
-    }
-  }
-
-  #handleDefaultSlot = () => {
-    this.#selectionChanged();
-  }
-
-  #handleListboxSlot = () => {
-    this.#selectionChanged();
+    this.#selectedValue.textContent = this.selectedOptions[0]?.label;
   }
 
   get #buttonSlot() {
@@ -196,9 +247,9 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   get #selectedValue() {
-    let selectedValue = this.querySelector('[behavior=selected-value]');
+    let selectedValue = this.querySelector('[behavior="selected-value"]');
     if (!selectedValue) {
-      selectedValue = this.shadowRoot.querySelector('[behavior=selected-value]');
+      selectedValue = this.shadowRoot.querySelector('[behavior="selected-value"]');
     }
     return selectedValue;
   }
@@ -220,18 +271,23 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   #handleClick = (event) => {
+    if (this.disabled) return;
+
     const path = event.composedPath();
-    let selected;
+    let selectedOption;
 
     // Open / Close
     if (path.some(el => el === this.#button)) {
 
-      this.#listbox.style.width = `${this.offsetWidth}px`;
       this.#listbox.classList.toggle(':open');
 
-    } else if (path.some(el => this.options.includes(el) && (selected = el))) {
+      if (!this.#listbox.style.minWidth) {
+        this.#listbox.style.minWidth = `${this.offsetWidth}px`;
+      }
 
-      this.#setSelectedOptions(selected);
+    } else if (path.some(el => this.options.includes(el) && (selectedOption = el))) {
+
+      selectedOption.selected = true;
       this.#listbox.classList.remove(':open');
     }
 
