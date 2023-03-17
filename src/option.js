@@ -27,32 +27,38 @@ template.innerHTML = html`
 `;
 
 class OptionElement extends globalThis.HTMLElement {
-
-  static observedAttributes = ['selected'];
+  static formAssociated = true;
+  static observedAttributes = ['disabled', 'selected'];
 
   /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
   #dirty = false;
-
+  #internals;
   #selected = false;
 
   constructor() {
     super();
+    this.#internals = this.attachInternals?.() ?? {};
+    this.#internals.role = 'option';
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.append(template.content.cloneNode(true));
   }
 
   attributeChangedCallback(name, oldVal, newVal) {
+    if (oldVal === newVal) return;
+
     if (name === 'selected' && !this.#dirty) {
       this._setSelectedState(newVal != null);
+      this.#ownerElement()?.reset();
+    }
+
+    if (name === 'disabled') {
+      this.#internals.ariaDisabled = newVal != null ? 'true' : 'false';
+      this.#ownerElement()?.reset();
     }
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('role')) {
-      this.setAttribute('role', 'option');
-    }
-
     this.#ownerElement()?.reset();
   }
 
@@ -130,8 +136,10 @@ class OptionElement extends globalThis.HTMLElement {
   _setSelectedState(selected) {
     if (selected) {
       this.#selected = true;
+      this.#internals.ariaSelected = 'true';
     } else {
       this.#selected = false;
+      this.#internals.ariaSelected = 'false';
     }
   }
 }

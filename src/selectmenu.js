@@ -119,8 +119,19 @@ template.innerHTML = html`
 `;
 
 class SelectMenuElement extends globalThis.HTMLElement {
+  static formAssociated = true;
+  static observedAttributes = ['disabled', 'required', 'size', 'multiple'];
+
+  #internals;
+
   constructor() {
     super();
+
+    this.#internals = this.attachInternals?.() ?? {};
+    this.#internals.role = 'combobox';
+    this.#internals.ariaExpanded = 'false';
+    this.#internals.ariaDisabled = 'false';
+    this.#internals.ariaRequired = 'false';
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.append(template.content.cloneNode(true));
@@ -128,6 +139,9 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.addEventListener('click', this.#handleClick);
     document.addEventListener('click', this.#handleBlur);
   }
+
+  get form() { return this.#internals.form; }
+  get name() { return this.getAttribute('name'); }
 
   get options() {
     return [...this.querySelectorAll('x-option')];
@@ -151,6 +165,18 @@ class SelectMenuElement extends globalThis.HTMLElement {
 
   set value(val) {
 
+  }
+
+  get required() {
+    return this.hasAttribute('required');
+  }
+
+  set required(val) {
+    if (val) {
+      this.setAttribute('required', '');
+    } else {
+      this.removeAttribute('required');
+    }
   }
 
   get disabled() {
@@ -178,11 +204,27 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   get size() {
-    return 1;
+    return this.getAttribute('size') ?? 0;
   }
 
   set size(val) {
+    if (val) {
+      this.setAttribute('size', val);
+    } else {
+      this.removeAttribute('size');
+    }
+  }
 
+  attributeChangedCallback(name, oldVal, newVal) {
+
+    const attrToAria = {
+      disabled: 'ariaDisabled',
+      required: 'ariaRequired',
+    };
+
+    if (name in attrToAria) {
+      this.#internals[attrToAria[name]] = newVal != null ? 'true' : 'false';
+    }
   }
 
   _optionSelectionChanged(option, selected) {
@@ -211,21 +253,28 @@ class SelectMenuElement extends globalThis.HTMLElement {
     let selectedOption;
 
     for (let option of this.options) {
+
       if (option.selected) {
-        if (selectedOption && !this.multiple)
+
+        if (selectedOption && !this.multiple) {
           selectedOption._setSelectedState(false);
+        }
+
         option._setSelectedState(true);
         selectedOption = option;
+
       } else {
         option._setSelectedState(false);
       }
 
-      if (!firstOption && !option.disabled)
+      if (!firstOption && !option.disabled) {
         firstOption = option;
+      }
     }
 
-    if (!selectedOption && firstOption && !this.multiple && this.size <= 1)
+    if (!selectedOption && firstOption && !this.multiple && this.size <= 1) {
       firstOption._setSelectedState(true);
+    }
 
     this.#selectionChanged();
   }
@@ -279,7 +328,11 @@ class SelectMenuElement extends globalThis.HTMLElement {
     // Open / Close
     if (path.some(el => el === this.#button)) {
 
-      this.#listbox.classList.toggle(':open');
+      if (this.#isListboxExpanded()) {
+        this.#hideListbox();
+      } else {
+        this.#showListbox();
+      }
 
       if (!this.#listbox.style.minWidth) {
         this.#listbox.style.minWidth = `${this.offsetWidth}px`;
@@ -288,17 +341,45 @@ class SelectMenuElement extends globalThis.HTMLElement {
     } else if (path.some(el => this.options.includes(el) && (selectedOption = el))) {
 
       selectedOption.selected = true;
-      this.#listbox.classList.remove(':open');
+      this.#hideListbox();
     }
-
   }
 
   #handleBlur = (event) => {
 
     if (event.composedPath().some(el => el === this)) return;
 
-    this.#listbox.classList.remove(':open');
+    this.#hideListbox();
   }
+
+  #isListboxExpanded() {
+    try {
+      return this.#listbox.matches(':open');
+    } catch {
+      return this.#listbox.matches('.\\:open');
+    }
+  }
+
+  #showListbox() {
+    this.#internals.ariaExpanded = 'true';
+
+    if (this.#listbox.showPopover) {
+      this.#listbox.showPopover();
+    } else {
+      this.#listbox.classList.add(':open');
+    }
+  }
+
+  #hideListbox() {
+    this.#internals.ariaExpanded = 'false';
+
+    if (this.#listbox.hidePopover) {
+      this.#listbox.hidePopover();
+    } else {
+      this.#listbox.classList.remove(':open');
+    }
+  }
+
 }
 
 if (!globalThis.customElements.get('x-selectmenu')) {
