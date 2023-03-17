@@ -113,24 +113,16 @@ class OptionElement extends globalThis.HTMLElement {
     return this.hasAttribute('selected');
   }
 
-  set defaultSelected(val) {
-    if (val) {
-      this.setAttribute('selected', '');
-    } else {
-      this.removeAttribute('selected');
-    }
+  set defaultSelected(flag) {
+    this.toggleAttribute('selected', Boolean(flag));
   }
 
   get disabled() {
     return this.hasAttribute('disabled');
   }
 
-  set disabled(val) {
-    if (val) {
-      this.setAttribute('disabled', '');
-    } else {
-      this.removeAttribute('disabled');
-    }
+  set disabled(flag) {
+    this.toggleAttribute('disabled', Boolean(flag));
   }
 
   _setSelectedState(selected) {

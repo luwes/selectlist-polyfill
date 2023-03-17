@@ -171,36 +171,24 @@ class SelectMenuElement extends globalThis.HTMLElement {
     return this.hasAttribute('required');
   }
 
-  set required(val) {
-    if (val) {
-      this.setAttribute('required', '');
-    } else {
-      this.removeAttribute('required');
-    }
+  set required(flag) {
+    this.toggleAttribute('required', Boolean(flag));
   }
 
   get disabled() {
     return this.hasAttribute('disabled');
   }
 
-  set disabled(val) {
-    if (val) {
-      this.setAttribute('disabled', '');
-    } else {
-      this.removeAttribute('disabled');
-    }
+  set disabled(flag) {
+    this.toggleAttribute('disabled', Boolean(flag));
   }
 
   get multiple() {
     return this.hasAttribute('multiple');
   }
 
-  set multiple(val) {
-    if (val) {
-      this.setAttribute('multiple', '');
-    } else {
-      this.removeAttribute('multiple');
-    }
+  set multiple(flag) {
+    this.toggleAttribute('multiple', Boolean(flag));
   }
 
   get size() {
@@ -243,6 +231,10 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.#selectionChanged();
   }
 
+  #selectionChanged() {
+    this.#selectedValue.textContent = this.selectedOptions[0]?.label;
+  }
+
   /**
    * Reset for a selectmenu is the selectedness setting algorithm.
    * Child Options's that are added and removed request this.
@@ -277,10 +269,6 @@ class SelectMenuElement extends globalThis.HTMLElement {
     }
 
     this.#selectionChanged();
-  }
-
-  #selectionChanged() {
-    this.#selectedValue.textContent = this.selectedOptions[0]?.label;
   }
 
   get #buttonSlot() {
