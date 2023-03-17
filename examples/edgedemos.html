@@ -164,7 +164,7 @@
         shape-outside: polygon( 0px 0, 23.64% 1.41%, 42.67% 4.67%, 64.67% 11.33%, 82% 20.33%, 92% 30%, 97.13% 39.15%, 100% 50%, 96.67% 62.67%, 90% 71%, 78.67% 82%, 59.42% 90.4%, 35.33% 97%, 0 100%, 100% 100%, 100% 0);
       }
 
-      .bubble .smileys x-option {
+      .bubble .smileys :is(option, x-option) {
         font-size: 25px;
         margin: 0;
         padding: 0;
@@ -175,7 +175,7 @@
         cursor: pointer;
       }
 
-      .bubble .smileys x-option:hover {
+      .bubble .smileys :is(option, x-option):hover {
         background: #0003;
       }
 
@@ -338,13 +338,13 @@
         box-shadow: 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12), 0px 5px 5px -3px rgba(0, 0, 0, 0.2);
       }
 
-      .vertical-align x-option {
+      .vertical-align :is(option, x-option) {
         padding: 0 8px;
         height: 36px;
         line-height: 36px;
       }
 
-      .vertical-align x-option:hover {
+      .vertical-align :is(option, x-option):hover {
         background-color: #eee;
       }
 
@@ -385,7 +385,7 @@
       verticalAlignButton.addEventListener('click', () => {
         // Initialize the height of an option.
         if (!optionHeight) {
-          optionHeight = verticalAlignpopover.querySelector('x-option').offsetHeight;
+          optionHeight = verticalAlignpopover.querySelector('option,x-option').offsetHeight;
         }
 
         // Calculate the vertical position of the selected option.
@@ -444,18 +444,18 @@
         border-width: 1px 1px 0;
       }
 
-      .combobox x-option {
+      .combobox :is(option, x-option) {
         padding: 5px;
       }
 
-      .combobox x-option:hover,
-      .combobox x-option:focus {
+      .combobox :is(option, x-option):hover,
+      .combobox :is(option, x-option):focus {
         background: #097ff5;
         color: white;
         outline: 0;
       }
 
-      .combobox x-option .highlight {
+      .combobox :is(option, x-option) .highlight {
         text-decoration: underline;
       }
 
@@ -533,7 +533,7 @@
       const cbpopover = combobox.querySelector('[popover]');
       const cbInput = combobox.querySelector('input[type="search"]');
       const cbOptionsContainer = combobox.querySelector('.options');
-      const cbOptionList = [...combobox.querySelectorAll('x-option')].map(option => option.textContent);
+      const cbOptionList = [...combobox.querySelectorAll('option,x-option')].map(option => option.textContent);
       const cbValue = combobox.querySelector('.visible-value');
 
       combobox.addEventListener('click', () => {
@@ -717,7 +717,7 @@
       let multiValues = [];
 
       multiselect.addEventListener('click', e => {
-        const option = e.target.closest('x-option');
+        const option = e.target.closest('option,x-option');
         if (!option) return;
 
         const newValue = option.value;
@@ -773,7 +773,7 @@
       }
 
       function multiRefreshOptions() {
-        const options = multiselect.querySelectorAll('x-option');
+        const options = multiselect.querySelectorAll('option,x-option');
         options.forEach(option => {
           if (multiValues.includes(option.value)) {
             option.setAttribute('selected', '');
@@ -818,16 +818,16 @@
         margin-top: 8px;
       }
 
-      .gitpod x-option {
+      .gitpod :is(option, x-option) {
         background-color: #fafaf9;
         padding: 12px 16px;
       }
 
-      .gitpod x-option:not(:last-child) {
+      .gitpod :is(option, x-option):not(:last-child) {
         border-bottom: 1px solid #e7e5e4;
       }
 
-      .gitpod x-option:not(.action)::after {
+      .gitpod :is(option, x-option):not(.action)::after {
         content: attr(data-details);
         display: block;
         color: #a8a29e;
@@ -835,18 +835,18 @@
         font-weight: normal;
       }
 
-      .gitpod x-option:hover {
+      .gitpod :is(option, x-option):hover {
         background-color: #f5f5f4;
       }
 
-      .gitpod x-option.action {
+      .gitpod :is(option, x-option).action {
         color: #a8a29e;
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
 
-      .gitpod x-option.action svg {
+      .gitpod :is(option, x-option).action svg {
         width: 16px;
       }
     </style>
@@ -1186,7 +1186,7 @@
         display: none;
       }
 
-      .gh-sort x-option {
+      .gh-sort :is(option, x-option) {
         cursor: pointer;
       }
 
@@ -1207,17 +1207,17 @@
         }
       }
 
-      .gh-sort .standard x-option {
+      .gh-sort .standard :is(option, x-option) {
         color: #24292f;
         padding: 7px 40px;
         border-bottom: 1px solid rgb(216, 222, 228);
       }
 
-      .gh-sort .standard x-option:hover {
+      .gh-sort .standard :is(option, x-option):hover {
         background-color: rgba(234, 238, 242, 0.5);
       }
 
-      .gh-sort .standard x-option:checked {
+      .gh-sort .standard :is(option, x-option):checked {
         font-weight: bold;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 16 16" version="1.1" width="16"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg>');
         background-repeat: no-repeat;
@@ -1239,17 +1239,17 @@
         padding: 8px;
       }
 
-      .gh-sort .reaction x-option {
+      .gh-sort .reaction :is(option, x-option) {
         padding: 8px 16px;
         border-radius: 6px;
         border: 1px solid transparent;
       }
 
-      .gh-sort .reaction x-option:hover {
+      .gh-sort .reaction :is(option, x-option):hover {
         background-color: #0969da;
       }
 
-      .gh-sort .reaction x-option:checked {
+      .gh-sort .reaction :is(option, x-option):checked {
         border-color: #0969da;
         background-color: #ddf4ff;
       }
@@ -1357,7 +1357,7 @@
         margin-top: .5rem;
       }
 
-      .dribbble-filters .filter x-option {
+      .dribbble-filters .filter :is(option, x-option) {
         padding: .5rem;
         color: #6e6d7a;
         cursor: pointer;
@@ -1367,34 +1367,34 @@
         align-items: center;
       }
 
-      .dribbble-filters .filter x-option:hover {
+      .dribbble-filters .filter :is(option, x-option):hover {
         background: #e7e7e9;
       }
 
-      .dribbble-filters .filter x-option:checked {
+      .dribbble-filters .filter :is(option, x-option):checked {
         color: #ea4c89;
       }
 
-      .dribbble-filters .filter.color-type x-option::before {
+      .dribbble-filters .filter.color-type :is(option, x-option)::before {
         content: '';
         width: .5rem;
         height: .5rem;
         border-radius: 50%;
       }
 
-      .dribbble-filters .filter.color-type x-option[value="r"]::before {
+      .dribbble-filters .filter.color-type :is(option, x-option)[value="r"]::before {
         background: red;
       }
 
-      .dribbble-filters .filter.color-type x-option[value="g"]::before {
+      .dribbble-filters .filter.color-type :is(option, x-option)[value="g"]::before {
         background: green;
       }
 
-      .dribbble-filters .filter.color-type x-option[value="b"]::before {
+      .dribbble-filters .filter.color-type :is(option, x-option)[value="b"]::before {
         background: blue;
       }
 
-      .dribbble-filters .filter.browser-type x-option::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)::before {
         content: '';
         width: 1rem;
         height: 1rem;
@@ -1402,27 +1402,27 @@
         background-size: contain;
       }
 
-      .dribbble-filters .filter.browser-type x-option[value="brave"]::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)[value="brave"]::before {
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c4/Brave_lion.png");
       }
 
-      .dribbble-filters .filter.browser-type x-option[value="edge"]::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)[value="edge"]::before {
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Microsoft_Edge_logo_%282019%29.svg/1200px-Microsoft_Edge_logo_%282019%29.svg.png");
       }
 
-      .dribbble-filters .filter.browser-type x-option[value="chrome"]::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)[value="chrome"]::before {
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_%28September_2014%29.svg/1200px-Google_Chrome_icon_%28September_2014%29.svg.png");
       }
 
-      .dribbble-filters .filter.browser-type x-option[value="firefox"]::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)[value="firefox"]::before {
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png");
       }
 
-      .dribbble-filters .filter.browser-type x-option[value="safari"]::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)[value="safari"]::before {
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Safari_browser_logo.svg/1200px-Safari_browser_logo.svg.png");
       }
 
-      .dribbble-filters .filter.browser-type x-option[value="opera"]::before {
+      .dribbble-filters .filter.browser-type :is(option, x-option)[value="opera"]::before {
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Opera_2015_icon.svg/640px-Opera_2015_icon.svg.png");
       }
     </style>
@@ -1615,13 +1615,13 @@
         column-gap: 5px;
       }
 
-      .word-color .color-grid x-option {
+      .word-color .color-grid :is(option, x-option) {
         width: 20px;
         padding: 0;
         aspect-ratio: 1;
       }
 
-      .word-color .color-grid x-option:hover {
+      .word-color .color-grid :is(option, x-option):hover {
         box-shadow: inset 0 0 0 1px orange, inset 0 0 0 2px white;
       }
 
