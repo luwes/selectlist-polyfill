@@ -71,7 +71,7 @@ class OptionElement extends globalThis.HTMLElement {
   }
 
   get label() {
-    return this.getAttribute('label') ?? this.textContent;
+    return this.getAttribute('label') ?? this.text;
   }
 
   set label(val) {
@@ -79,11 +79,15 @@ class OptionElement extends globalThis.HTMLElement {
   }
 
   get value() {
-    return this.getAttribute('value');
+    return this.getAttribute('value') ?? this.text;
   }
 
   set value(val) {
     this.setAttribute('value', val);
+  }
+
+  get text() {
+    return (this.textContent ?? '').trim();
   }
 
   get selected() {
