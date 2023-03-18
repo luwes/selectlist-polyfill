@@ -7,95 +7,155 @@
 <script src="../dist/polyfill.js"></script>
 
 <template extends="./layout.html">
+
+  <template block="head">
+    {{super}}
+    <style>
+      main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: .5rem;
+      }
+    </style>
+  </template>
+
   <template block="content">
-    <h3>Default behavior</h3>
 
-    <selectmenu id="pet">
-      <option>Option 1</option>
-      <option>Option 2</option>
-      <option>Option 3</option>
-    </selectmenu>
+    <div>
+      <h3>Default</h3>
+      <selectmenu id="pet">
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </selectmenu>
 
-    <script>
-      function addOption() {
-        let opt = document.createElement("option");
-        opt.textContent = "Frog";
-        pet.prepend(opt);
-      }
-    </script>
+      <h3>Disabled selectmenu</h3>
+      <selectmenu disabled>
+        <option>Option 1</option>
+        <option selected>Option 2</option>
+        <option>Option 3</option>
+      </selectmenu>
 
-    <button id="btn" onclick="addOption()">Add option</button>
-
-    <selectmenu disabled>
-      <option>Option 1</option>
-      <option selected>Option 2</option>
-      <option>Option 3</option>
-    </selectmenu>
-
-    <selectmenu>
-      <option disabled>Option 1</option>
-      <option>Option 2</option>
-      <option>Option 3</option>
-    </selectmenu>
+      <h3>Disabled option</h3>
+      <selectmenu>
+        <option disabled>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </selectmenu>
 
 
-    <h3>Styling parts of the control</h3>
+      <h3>Styling parts of the control</h3>
+      <style>
+        .my-select-menu::part(button) {
+          color: white;
+          background-color: #f00;
+          padding: 5px;
+          border-radius: 5px;
+        }
 
-    <style>
-      .my-select-menu::part(button) {
-        color: white;
-        background-color: #f00;
-        padding: 5px;
-        border-radius: 5px;
-      }
-
-      .my-select-menu::part(listbox) {
-        padding: 10px;
-        margin-top: 5px;
-        border: 1px solid red;
-        border-radius: 5px;
-      }
-    </style>
-    <selectmenu class="my-select-menu">
-      <option>Option 1</option>
-      <option>Option 2</option>
-      <option>Option 3</option>
-    </selectmenu>
+        .my-select-menu::part(listbox) {
+          padding: 10px;
+          margin-top: 5px;
+          border: 1px solid red;
+          border-radius: 5px;
+        }
+      </style>
+      <selectmenu class="my-select-menu">
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </selectmenu>
 
 
-    <h3>Use your own markup</h3>
+      <h3>Use your own markup 1</h3>
+      <style>
+        .my-custom-select [slot='button'] {
+          display: flex;
+          align-content: center;
+        }
+        .my-custom-select button {
+          padding: 5px;
+          border: 1px solid #f06;
+          background: #f06;
+          border-radius: 5px 0 0 5px;
+          color: white;
+          font-weight: bold;
+        }
+        .my-custom-select .label {
+          padding: 5px;
+          border: 1px solid #f06;
+          border-left: none;
+          border-radius: 0 5px 5px 0;
+        }
+      </style>
+      <selectmenu class="my-custom-select">
+        <div slot="button">
+          <button behavior="button">Open</button>
+          <span class="label">Choose an option</span>
+        </div>
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </selectmenu>
 
-    <style>
-      .my-custom-select [slot='button'] {
-        display: flex;
-        align-content: center;
-      }
-      .my-custom-select button {
-        padding: 5px;
-        border: 1px solid #f06;
-        background: #f06;
-        border-radius: 5px 0 0 5px;
-        color: white;
-        font-weight: bold;
-      }
-      .my-custom-select .label {
-        padding: 5px;
-        border: 1px solid #f06;
-        border-left: none;
-        border-radius: 0 5px 5px 0;
-      }
-    </style>
-    <selectmenu class="my-custom-select">
-      <div slot="button">
-        <button behavior="button">Open</button>
-        <span class="label">Choose an option</span>
-      </div>
-      <option>Option 1</option>
-      <option>Option 2</option>
-      <option>Option 3</option>
-    </selectmenu>
+      <h3>Use your own markup 2</h3>
+      <style>
+        .my-custom-select2 [popover] {
+          width: 300px;
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+          gap: 10px;
+          padding: 10px;
+          box-shadow: none;
+          margin: 10px 0;
+          border: 1px solid;
+          background: #f7f7f7;
+        }
+        .my-custom-select2 .\:open {
+          display: grid;
+        }
+        .my-custom-select2 :open {
+          display: grid;
+        }
+      </style>
+      <selectmenu class="my-custom-select2">
+        <div slot="listbox">
+          <div popover behavior="listbox">
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+            <option>Option 4</option>
+            <option>Option 5</option>
+          </div>
+        </div>
+      </selectmenu>
+    </div>
 
-    <br>
-    <br>
+    <div>
+      <h3>Native select</h3>
+      <select id="pet">
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </select>
+
+      <h3>Disabled select</h3>
+      <select disabled>
+        <option>Option 1</option>
+        <option selected>Option 2</option>
+        <option>Option 3</option>
+      </select>
+
+      <h3>Disabled option</h3>
+      <select>
+        <option disabled>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </select>
+
+      <h3>Native button</h3>
+      <button>Option 1</button>
+
+    </div>
+
   </template>
 </template>

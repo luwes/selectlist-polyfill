@@ -1,21 +1,49 @@
 <head>
   <template block="head">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/awsm.css/dist/awsm.min.css">
     <style>
-      body {
-        position: relative;
-        max-width: 40rem;
-        margin: 2rem auto;
-        font-size: revert;
+      html {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        line-height: 1.4;
       }
-      button {
-        height: revert;
-        padding: revert;
-        font-size: revert;
+      body > :is(header, main) {
+        max-width: 40rem;
+        margin: 0 auto 2rem;
+        padding: .5rem;
       }
       h3 {
         margin-bottom: 1rem;
         margin-top: 2rem;
+      }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      nav li {
+        display: inline-block;
+        margin-right: 1em;
+        margin-bottom: 0.25em;
+      }
+      nav li:last-child {
+        margin-right: 0
+      }
+      nav a:visited {
+        color: #0064c1
+      }
+      nav a:hover {
+        color:#f00000;
+      }
+      a {
+        color:#0064c1;
+      }
+      a:visited {
+        color:#8d39d0;
+      }
+      a:hover, a:active {
+        outline-width:0;
+      }
+      a:hover {
+        color:#f00000;
       }
     </style>
   </template>
@@ -34,5 +62,7 @@
     </nav>
   </header>
 
-  <template block="content"></template>
+  <main>
+    <template block="content"></template>
+  </main>
 </body>

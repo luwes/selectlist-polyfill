@@ -5,8 +5,14 @@ const template = document.createElement('template');
 template.innerHTML = html`
   <style>
     :host {
-      display: list-item;
+      display: block;
       list-style: none;
+      font: -webkit-small-control;
+      line-height: revert;
+      white-space: nowrap;
+      min-height: 1.2em;
+      padding: 1px 2px;
+      border-radius: 2px;
     }
 
     :host(:hover) {
