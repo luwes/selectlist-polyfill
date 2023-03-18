@@ -25,6 +25,32 @@ test('selectmenu selects the option w/ selected attribute', async function (t) {
   t.equal(selectmenu.selectedIndex, 1);
 });
 
+test('selectmenu.selectedIndex selects the option w/ index', async function (t) {
+  const selectmenu = await fixture(`
+    <x-selectmenu>
+      <x-option>Option 1</x-option>
+      <x-option>Option 2</x-option>
+    </x-selectmenu>`);
+
+  selectmenu.selectedIndex = 1;
+
+  t.equal(selectmenu.value, 'Option 2');
+  t.equal(selectmenu.selectedIndex, 1);
+});
+
+test('selectmenu.value selects the option w/ value', async function (t) {
+  const selectmenu = await fixture(`
+    <x-selectmenu>
+      <x-option>Option 1</x-option>
+      <x-option>Option 2</x-option>
+    </x-selectmenu>`);
+
+  selectmenu.value = 'Option 2';
+
+  t.equal(selectmenu.value, 'Option 2');
+  t.equal(selectmenu.selectedIndex, 1);
+});
+
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -155,8 +155,11 @@ class SelectMenuElement extends globalThis.HTMLElement {
     return this.options.findIndex(option => option.selected);
   }
 
-  set selectedIndex(val) {
-
+  set selectedIndex(index) {
+    const option = this.options.find(option => option.index === index);
+    if (option) {
+      this.#selectOption(option);
+    }
   }
 
   get value() {
@@ -164,7 +167,10 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   set value(val) {
-
+    const option = this.options.find(option => option.value === val);
+    if (option) {
+      this.#selectOption(option);
+    }
   }
 
   get required() {

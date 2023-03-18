@@ -53,7 +53,7 @@ class OptionElement extends globalThis.HTMLElement {
     }
 
     if (name === 'disabled') {
-      this.#internals.ariaDisabled = newVal != null ? 'true' : 'false';
+      this.#internals.ariaDisabled = this.disabled ? 'true' : 'false';
       this.#ownerElement()?.reset();
     }
   }
