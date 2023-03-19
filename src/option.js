@@ -21,6 +21,7 @@ template.innerHTML = html`
     }
 
     :host([disabled]) {
+      pointer-events: none;
       color: rgba(16, 16, 16, 0.3);
     }
 
