@@ -12,7 +12,6 @@ template.innerHTML = html`
       white-space: nowrap;
       min-height: 1.2em;
       padding: 1px 2px;
-      border-radius: 2px;
     }
 
     :host(:hover) {

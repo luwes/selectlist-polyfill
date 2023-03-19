@@ -5,12 +5,10 @@ const popoverStyles = `
   @supports not selector([popover]:open) {
 
     [popover] {
-      position: absolute;
+      position: fixed;
       z-index: 2147483647;
-      inset: 0;
       padding: 0.25em;
       width: fit-content;
-      height: fit-content;
       border: solid;
       background: canvas;
       color: canvastext;
@@ -29,10 +27,9 @@ headTemplate.innerHTML = html`
   <style>
     ${popoverStyles}
 
-    x-selectmenu [behavior=listbox] {
+    x-selectmenu [behavior="listbox"] {
       min-block-size: 1lh;
-      margin: 0px;
-      inset: auto;
+      margin: 0;
     }
   </style>
 `;
@@ -49,46 +46,51 @@ template.innerHTML = html`
       position: relative;
     }
 
-    [part=button] {
+    [part="button"] {
       display: inline-flex;
       align-items: center;
       background-color: white;
       cursor: default;
       appearance: none;
-      padding: 0 3px;
+      padding: 1px 3px;
       border-width: 1px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
       border-image: initial;
       border-radius: 2px;
       color: buttontext;
-      line-height: 17px;
+      line-height: min(1.3em, 15px);
     }
 
-    :host([disabled]) [part=button] {
+    :host([disabled]) [part="button"] {
       background-color: rgba(239, 239, 239, 0.3);
       color: graytext;
       opacity: 0.7;
       border-color: rgba(118, 118, 118, 0.3);
     }
 
-    [part=marker] {
+    [part="marker"] {
       margin-inline-start: 4px;
     }
 
-    [part=listbox] {
+    [part="listbox"] {
       box-shadow: rgba(0, 0, 0, 0.13) 0px 12.8px 28.8px,
         rgba(0, 0, 0, 0.11) 0px 0px 9.2px;
-      box-sizing: border-box;
       min-block-size: 1lh;
       border-width: 1px;
       border-style: solid;
       border-color: rgba(0, 0, 0, 0.15);
       border-image: initial;
       border-radius: 4px;
-      overflow: auto;
       padding: 4px;
+    }
+
+    [part="listbox"], ::slotted([behavior="listbox"]) {
+      box-sizing: border-box;
+      overflow: auto;
       inset: auto;
+      max-height: 100vh;
+      max-width: 100vw;
     }
   </style>
   <slot name="button">
@@ -128,7 +130,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.append(template.content.cloneNode(true));
 
-    this.addEventListener('click', this.#handleClick);
+    this.addEventListener('click', this.#handleClick, true);
     document.addEventListener('click', this.#handleBlur);
   }
 
@@ -141,6 +143,10 @@ class SelectMenuElement extends globalThis.HTMLElement {
 
   get selectedOptions() {
     return this.options.filter(option => option.selected);
+  }
+
+  get selectedOption() {
+    return this.options.find(option => option.selected);
   }
 
   get selectedIndex() {
@@ -320,9 +326,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
         this.#showListbox();
       }
 
-      if (!this.#listbox.style.minWidth) {
-        this.#listbox.style.minWidth = `${this.offsetWidth + 1}px`;
-      }
+      reposition(this, this.#listbox);
 
     } else if (path.some(el => this.options.includes(el) && (selectedOption = el))) {
 
@@ -336,6 +340,12 @@ class SelectMenuElement extends globalThis.HTMLElement {
     if (event.composedPath().some(el => el === this)) return;
 
     this.#hideListbox();
+  }
+
+  #handleReposition = () => {
+    if (this.#isListboxExpanded()) {
+      reposition(this, this.#listbox);
+    }
   }
 
   #isListboxExpanded() {
@@ -354,6 +364,9 @@ class SelectMenuElement extends globalThis.HTMLElement {
     } else {
       this.#listbox.classList.add(':open');
     }
+
+    window.addEventListener('resize', this.#handleReposition);
+    window.addEventListener('scroll', this.#handleReposition);
   }
 
   #hideListbox() {
@@ -364,8 +377,80 @@ class SelectMenuElement extends globalThis.HTMLElement {
     } else {
       this.#listbox.classList.remove(':open');
     }
+
+    window.removeEventListener('resize', this.#handleReposition);
+    window.removeEventListener('scroll', this.#handleReposition);
   }
 
+}
+
+function reposition(reference, popover) {
+
+  let { style } = getOrInsertCSSRule(
+    reference.shadowRoot, 
+    '[part="listbox"], ::slotted([behavior="listbox"])'
+  );
+
+  if (!style) style = popover.style;
+
+  style.removeProperty('height');
+  style.top = 'auto';
+
+  const container = { top: 0, height: window.innerHeight };
+  const refBox = reference.getBoundingClientRect();
+
+  if (!style.minWidth) {
+    style.minWidth = `${refBox.width}px`;
+  }
+
+  style.top = `${refBox.bottom}px`;
+
+  let popBox = popover.getBoundingClientRect();  
+  const bottomOverflow = popBox.bottom - container.height;
+
+  if (bottomOverflow > 0) {
+
+    let newHeight = popBox.height - bottomOverflow;
+    if (newHeight > 100) {
+
+      style.height = `${newHeight}px`;
+
+    } else {
+
+      style.top = `${refBox.top - popBox.height}px`;
+
+      popBox = popover.getBoundingClientRect();
+
+      const topOverflow = container.top - popBox.top;
+      newHeight = popBox.height - topOverflow;
+      
+      if (topOverflow > 0) {
+        style.top = container.top;
+        style.height = `${newHeight}px`;
+      }
+    }
+  }
+}
+
+/**
+ * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * @param  {Element|ShadowRoot} styleParent
+ * @param  {string} selectorText
+ * @return {CSSStyleRule}
+  */
+function getOrInsertCSSRule(styleParent, selectorText) {
+  let style;
+  for (style of styleParent.querySelectorAll('style')) {
+    // Catch this error. e.g. browser extension adds style tags.
+    //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
+    //   Not allowed to access cross-origin stylesheet
+    let cssRules;
+    try { cssRules = style.sheet?.cssRules; } catch { continue; }
+    for (let rule of cssRules ?? [])
+      if (rule.selectorText === selectorText) return rule;
+  }
+
+  return {};
 }
 
 if (!globalThis.customElements.get('x-selectmenu')) {
