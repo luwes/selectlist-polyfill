@@ -395,6 +395,7 @@ function reposition(reference, popover) {
 
   style.removeProperty('height');
   style.top = 'auto';
+  style.bottom = 'auto';
 
   const container = { top: 0, height: window.innerHeight };
   const refBox = reference.getBoundingClientRect();
@@ -405,9 +406,9 @@ function reposition(reference, popover) {
 
   style.top = `${refBox.bottom}px`;
 
-  let popBox = popover.getBoundingClientRect();  
+  let popBox = popover.getBoundingClientRect();
+  
   const bottomOverflow = popBox.bottom - container.height;
-
   if (bottomOverflow > 0) {
 
     let newHeight = popBox.height - bottomOverflow;
@@ -417,7 +418,8 @@ function reposition(reference, popover) {
 
     } else {
 
-      style.top = `${refBox.top - popBox.height}px`;
+      style.top = 'auto';
+      style.bottom = `${container.height - refBox.top}px`;
 
       popBox = popover.getBoundingClientRect();
 
@@ -426,6 +428,7 @@ function reposition(reference, popover) {
       
       if (topOverflow > 0) {
         style.top = container.top;
+        style.bottom = 'auto';
         style.height = `${newHeight}px`;
       }
     }
@@ -441,11 +444,13 @@ function reposition(reference, popover) {
 function getOrInsertCSSRule(styleParent, selectorText) {
   let style;
   for (style of styleParent.querySelectorAll('style')) {
+
     // Catch this error. e.g. browser extension adds style tags.
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
     //   Not allowed to access cross-origin stylesheet
     let cssRules;
     try { cssRules = style.sheet?.cssRules; } catch { continue; }
+
     for (let rule of cssRules ?? [])
       if (rule.selectorText === selectorText) return rule;
   }
