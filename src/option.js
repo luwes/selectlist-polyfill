@@ -28,6 +28,11 @@ template.innerHTML = html`
     :host(.\\:checked[disabled]) {
       background-color: rgb(176, 176, 176);
     }
+
+    :host(:focus-visible) {
+      outline: -webkit-focus-ring-color auto 1px;
+    }
+
   </style>
   <slot></slot>
 `;

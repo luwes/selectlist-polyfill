@@ -114,7 +114,7 @@ template.innerHTML = html`
 
 class SelectMenuElement extends globalThis.HTMLElement {
   static formAssociated = true;
-  static observedAttributes = ['disabled', 'required', 'size', 'multiple'];
+  static observedAttributes = ['disabled', 'required', 'multiple'];
 
   #internals;
 
@@ -130,8 +130,44 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.append(template.content.cloneNode(true));
 
-    this.addEventListener('click', this.#handleClick, true);
-    document.addEventListener('click', this.#handleBlur);
+    this.addEventListener('click', this.#onClick, true);
+    this.addEventListener('keydown', this.#onKeydown);
+  }
+
+  get #buttonSlot() {
+    return this.shadowRoot.querySelector('slot[name=button]');
+  }
+
+  get #listboxSlot() {
+    return this.shadowRoot.querySelector('slot[name=listbox]');
+  }
+
+  get #defaultSlot() {
+    return this.shadowRoot.querySelector('slot:not([name])');
+  }
+
+  get #selectedValue() {
+    let selectedValue = this.querySelector('[behavior="selected-value"]');
+    if (!selectedValue) {
+      selectedValue = this.shadowRoot.querySelector('[behavior="selected-value"]');
+    }
+    return selectedValue;
+  }
+
+  get #buttonEl() {
+    let button = this.querySelector('[behavior=button]');
+    if (!button) {
+      button = this.shadowRoot.querySelector('[behavior=button]');
+    }
+    return button;
+  }
+
+  get #listboxEl() {
+    let listbox = this.querySelector('[behavior=listbox]');
+    if (!listbox) {
+      listbox = this.shadowRoot.querySelector('[behavior=listbox]');
+    }
+    return listbox;
   }
 
   get form() { return this.#internals.form; }
@@ -195,18 +231,6 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.toggleAttribute('multiple', Boolean(flag));
   }
 
-  get size() {
-    return this.getAttribute('size') ?? 0;
-  }
-
-  set size(val) {
-    if (val) {
-      this.setAttribute('size', val);
-    } else {
-      this.removeAttribute('size');
-    }
-  }
-
   attributeChangedCallback(name, oldVal, newVal) {
 
     const attrToAria = {
@@ -236,7 +260,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   #selectionChanged() {
-    this.#selectedValue.textContent = this.selectedOptions[0]?.label;
+    this.#selectedValue.textContent = this.selectedOption?.label;
   }
 
   /**
@@ -268,116 +292,159 @@ class SelectMenuElement extends globalThis.HTMLElement {
       }
     }
 
-    if (!selectedOption && firstOption && !this.multiple && this.size <= 1) {
+    if (!selectedOption && firstOption && !this.multiple) {
       firstOption._setSelectedState(true);
     }
 
     this.#selectionChanged();
   }
 
-  get #buttonSlot() {
-    return this.shadowRoot.querySelector('slot[name=button]');
-  }
-
-  get #listboxSlot() {
-    return this.shadowRoot.querySelector('slot[name=listbox]');
-  }
-
-  get #defaultSlot() {
-    return this.shadowRoot.querySelector('slot:not([name])');
-  }
-
-  get #selectedValue() {
-    let selectedValue = this.querySelector('[behavior="selected-value"]');
-    if (!selectedValue) {
-      selectedValue = this.shadowRoot.querySelector('[behavior="selected-value"]');
-    }
-    return selectedValue;
-  }
-
-  get #button() {
-    let button = this.querySelector('[behavior=button]');
-    if (!button) {
-      button = this.shadowRoot.querySelector('[behavior=button]');
-    }
-    return button;
-  }
-
-  get #listbox() {
-    let listbox = this.querySelector('[behavior=listbox]');
-    if (!listbox) {
-      listbox = this.shadowRoot.querySelector('[behavior=listbox]');
-    }
-    return listbox;
-  }
-
-  #handleClick = (event) => {
+  #onClick = (event) => {
     if (this.disabled) return;
 
     const path = event.composedPath();
     let selectedOption;
 
     // Open / Close
-    if (path.some(el => el === this.#button)) {
+    if (path.some(el => el === this.#buttonEl)) {
 
-      if (this.#isListboxExpanded()) {
-        this.#hideListbox();
+      if (this.#isOpen()) {
+        this.#hide();
       } else {
-        this.#showListbox();
+        this.#show();
       }
-
-      reposition(this, this.#listbox);
 
     } else if (path.some(el => this.options.includes(el) && (selectedOption = el))) {
 
-      selectedOption.selected = true;
-      this.#hideListbox();
+      this.#userSelect(selectedOption);
+      this.#hide();
     }
   }
 
-  #handleBlur = (event) => {
+  #onBlur = (event) => {
 
     if (event.composedPath().some(el => el === this)) return;
 
-    this.#hideListbox();
+    this.#hide();
+  }
+
+  #onKeydown = (event) => {
+    if (this.disabled) return;
+
+    const { key } = event;
+
+    const activeOptions = this.options.filter(opt => !opt.disabled);
+    let currentOption = activeOptions.find(el => el.tabIndex === 0)
+      ?? activeOptions[0];
+
+    if (key === 'Escape') {
+      this.#hide();
+      return;
+    }
+
+    if (key === 'Enter' || key === ' ') {
+      event.preventDefault();
+
+      if (!this.#isOpen()) {
+        this.#show();
+        return;
+      }
+
+      if (!this.multiple) {
+        this.#userSelect(currentOption);
+        this.#hide();
+      }
+
+      return;
+    }
+
+    if (['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) {
+      // Prevent scrolling
+      event.preventDefault();
+
+      const currentIndex = activeOptions.indexOf(currentOption);
+      let newIndex = Math.max(0, currentIndex);
+
+      if (key === 'ArrowDown') {
+        newIndex = Math.min(currentIndex + 1, activeOptions.length - 1);
+      } else if (key === 'ArrowUp') {
+        newIndex = Math.max(0, currentIndex - 1);
+      } else if (event.key === 'Home') {
+        newIndex = 0;
+      } else if (event.key === 'End') {
+        newIndex = activeOptions.length - 1;
+      }
+
+      this.options.forEach(option => (option.tabIndex = '-1'));
+
+      currentOption = activeOptions[newIndex];
+      currentOption.tabIndex = 0;
+      currentOption.focus();
+    }
+  };
+
+  #userSelect(option) {
+    const oldSelectedOptions = [...this.selectedOptions];
+
+    option.selected = true;
+
+    if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
+
+      this.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+      this.dispatchEvent(new Event('change', { bubbles: true }));
+    }
   }
 
   #handleReposition = () => {
-    if (this.#isListboxExpanded()) {
-      reposition(this, this.#listbox);
+    if (this.#isOpen()) {
+      reposition(this, this.#listboxEl);
     }
   }
 
-  #isListboxExpanded() {
+  #isOpen() {
     try {
-      return this.#listbox.matches(':open');
+      return this.#listboxEl.matches(':open');
     } catch {
-      return this.#listbox.matches('.\\:open');
+      return this.#listboxEl.matches('.\\:open');
     }
   }
 
-  #showListbox() {
+  #show() {
     this.#internals.ariaExpanded = 'true';
 
-    if (this.#listbox.showPopover) {
-      this.#listbox.showPopover();
+    if (this.#listboxEl.showPopover) {
+      this.#listboxEl.showPopover();
     } else {
-      this.#listbox.classList.add(':open');
+      this.#listboxEl.classList.add(':open');
     }
 
+    reposition(this, this.#listboxEl);
+
+    const activeOptions = this.options.filter(opt => !opt.disabled);
+    const currentOption = this.selectedOption
+      ?? activeOptions.find(el => el.tabIndex === 0)
+      ?? activeOptions[0];
+
+    this.options.forEach(option => (option.tabIndex = '-1'));
+    currentOption.tabIndex = 0;
+    currentOption.focus();
+
+    document.addEventListener('click', this.#onBlur);
     window.addEventListener('resize', this.#handleReposition);
     window.addEventListener('scroll', this.#handleReposition);
   }
 
-  #hideListbox() {
+  #hide() {
+    this.#buttonEl.focus();
     this.#internals.ariaExpanded = 'false';
 
-    if (this.#listbox.hidePopover) {
-      this.#listbox.hidePopover();
+    if (this.#listboxEl.hidePopover) {
+      this.#listboxEl.hidePopover();
     } else {
-      this.#listbox.classList.remove(':open');
+      this.#listboxEl.classList.remove(':open');
     }
 
+    document.removeEventListener('click', this.#onBlur);
     window.removeEventListener('resize', this.#handleReposition);
     window.removeEventListener('scroll', this.#handleReposition);
   }

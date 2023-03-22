@@ -21,6 +21,15 @@
 
   <template block="content">
 
+    <script>
+      document.addEventListener('input', (event) => {
+        console.log(event);
+      });
+      document.addEventListener('change', (event) => {
+        console.log(event);
+      });
+    </script>
+
     <div>
       <h3>Default</h3>
       <selectmenu id="pet">
