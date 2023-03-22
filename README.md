@@ -1,6 +1,10 @@
 # `<selectmenu>` polyfill
 
-Based on the proposal at https://open-ui.org/prototypes/selectmenu/
+Based on the proposal at https://open-ui.org/prototypes/selectmenu/  
+
+One of the goals was to research and create it as closely to spec as possible
+and use the learnings for the implementation in
+[Media Chrome](https://github.com/muxinc/media-chrome)
 
 ```html
 <script type="module" src="src/selectmenu.js"></script>
