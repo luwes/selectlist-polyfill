@@ -1,3 +1,12 @@
+## [0.0.2](https://github.com/luwes/selectmenu-polyfill/compare/v0.0.1...v0.0.2) (2023-03-22)
+
+
+### Bug Fixes
+
+* add build step before publish ([c3d5950](https://github.com/luwes/selectmenu-polyfill/commit/c3d595045eaef4e73cf79ad1a70ed567ee38e5f5))
+
+
+
 ## 0.0.1 (2023-03-22)
 
 
