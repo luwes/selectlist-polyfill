@@ -1,6 +1,6 @@
 {
   "name": "selectmenu-polyfill",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Polyfill for the selectmenu element",
   "type": "module",
   "main": "dist/polyfill.js",
