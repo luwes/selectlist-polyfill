@@ -19,7 +19,8 @@
     "lint": "npx eslint src/*.js",
     "test": "wet run",
     "dev": "wet serve --redirect :examples/ & npm run build -- --watch",
-    "build": "esbuild src/polyfill.js --global-name=SelectMenuPolyfill --outdir=dist --bundle --minify-syntax --tree-shaking=true"
+    "build": "esbuild src/polyfill.js --global-name=SelectMenuPolyfill --outdir=dist --bundle --minify-syntax --tree-shaking=true",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "esbuild": "^0.17.11",
