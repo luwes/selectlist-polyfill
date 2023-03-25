@@ -546,7 +546,7 @@
         cbOptionList.forEach(text => {
           const index = text.toLowerCase().indexOf(cbInput.value.toLowerCase());
           if (index !== -1) {
-            const optionElement = document.createElement('x-option');
+            const optionElement = document.createElement('option');
             optionElement.setAttribute('value', text);
 
             const label = document.createElement('span');
@@ -567,7 +567,7 @@
         });
 
         if (!matchingOptions) {
-          const optionElement = document.createElement('x-option');
+          const optionElement = document.createElement('option');
           optionElement.textContent = 'No matching options';
           cbOptionsContainer.appendChild(optionElement);
         }
@@ -1649,7 +1649,7 @@
     </style>
 
     <div class="word-toolbar">
-      <x-selectmenu class="word-color font-color" style="--selected-color:var(--initial-font-color);" title="Font color">
+      <selectmenu class="word-color font-color" style="--selected-color:var(--initial-font-color);" title="Font color">
         <div slot="button">
           <button class="apply-button"></button>
           <button behavior="button" class="open-button"></button>
@@ -1664,9 +1664,9 @@
           <option class="action" value="none">No Color</option>
           <option class="action" value="more">More Colors...</option>
         </div>
-      </x-selectmenu>
+      </selectmenu>
 
-      <x-selectmenu class="word-color background-color" style="--selected-color:var(--initial-background-color);" title="Shading">
+      <selectmenu class="word-color background-color" style="--selected-color:var(--initial-background-color);" title="Shading">
         <div slot="button">
           <button class="apply-button"></button>
           <button behavior="button" class="open-button"></button>
@@ -1681,12 +1681,15 @@
           <option class="action" value="none">No Color</option>
           <option class="action" value="more">More Colors...</option>
         </div>
-      </x-selectmenu>
+      </selectmenu>
 
       <span class="sample-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
     </div>
 
-    <script>
+    <script type="module">
+      // Wait 1 tick so the polyfill can replace the polyfilled elements if needed.
+      await Promise.resolve();
+
       const fcSelect = document.querySelector('.font-color');
       const fcThemeGrid = fcSelect.querySelector('.theme .color-grid');
       const fcStandardGrid = fcSelect.querySelector('.standard .color-grid');
