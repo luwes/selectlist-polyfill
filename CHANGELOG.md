@@ -1,3 +1,12 @@
+## [0.0.3](https://github.com/luwes/selectmenu-polyfill/compare/v0.0.2...v0.0.3) (2023-03-25)
+
+
+### Bug Fixes
+
+* add many fixes and tweaks ([4ccd777](https://github.com/luwes/selectmenu-polyfill/commit/4ccd777dc0dd536e33e230f3789607f923da4b30))
+
+
+
 ## [0.0.2](https://github.com/luwes/selectmenu-polyfill/compare/v0.0.1...v0.0.2) (2023-03-22)
 
 
