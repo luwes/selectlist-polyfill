@@ -1,45 +1,61 @@
 
-const html = (raw, ...keys) => String.raw({ raw }, ...keys);
+const popoverSupported = typeof HTMLElement !== 'undefined' &&
+  typeof HTMLElement.prototype === 'object' &&
+  'popover' in HTMLElement.prototype;
 
-const popoverStyles = `
-  @supports not selector([popover]:open) {
+const popoverStyles = popoverSupported ? '' : /* css */`
+  [popover] {
+    position: fixed;
+    z-index: 2147483647;
+    padding: 0.25em;
+    width: fit-content;
+    border: solid;
+    background: canvas;
+    color: canvastext;
+    overflow: auto;
+    margin: auto;
+  }
 
-    [popover] {
-      position: fixed;
-      z-index: 2147483647;
-      padding: 0.25em;
-      width: fit-content;
-      border: solid;
-      background: canvas;
-      color: canvastext;
-      overflow: auto;
-      margin: auto;
-    }
-
-    [popover]:not(.\\:open) {
-      display: none;
-    }
+  [popover]:not(.\\:open) {
+    display: none;
   }
 `;
 
-const headTemplate = document.createElement('template');
-headTemplate.innerHTML = html`
-  <style>
-    ${popoverStyles}
-
-    x-selectmenu [behavior="listbox"] {
-      min-block-size: 1lh;
-      margin: 0;
-    }
-  </style>
+const listboxStyles = /* css */`
+  [behavior="listbox"] {
+    box-sizing: border-box;
+    margin: 0;
+    min-block-size: 1lh;
+    max-block-size: inherit;
+    min-inline-size: inherit;
+    inset-block-start: inherit;
+    inset-block-end: inherit;
+  }
 `;
 
-document.head.append(headTemplate.content.cloneNode(true));
+/**
+ * CSS @layer: any styles declared outside of a layer will override styles
+ * declared in a layer, regardless of specificity.
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/@layer
+ */
+
+const headTemplate = document.createElement('template');
+headTemplate.innerHTML = /* html */`
+<style>
+  @layer {
+    ${popoverStyles}
+    x-selectmenu ${listboxStyles}
+  }
+</style>
+`;
+
+document.head.prepend(headTemplate.content.cloneNode(true));
 
 const template = document.createElement('template');
-template.innerHTML = html`
+template.innerHTML = /* html */`
   <style>
     ${popoverStyles}
+    ${listboxStyles}
 
     :host {
       display: inline-block;
@@ -73,7 +89,13 @@ template.innerHTML = html`
       margin-inline-start: 4px;
     }
 
+    slot[name="listbox"],
+    ::slotted([slot="listbox"]) {
+      ${/* min-inline-size overridden below by selectmenu width */''}
+    }
+
     [part="listbox"] {
+      box-sizing: border-box;
       box-shadow: rgba(0, 0, 0, 0.13) 0px 12.8px 28.8px,
         rgba(0, 0, 0, 0.11) 0px 0px 9.2px;
       min-block-size: 1lh;
@@ -83,14 +105,6 @@ template.innerHTML = html`
       border-image: initial;
       border-radius: 4px;
       padding: 4px;
-    }
-
-    [part="listbox"], ::slotted([behavior="listbox"]) {
-      box-sizing: border-box;
-      overflow: auto;
-      inset: auto;
-      max-height: 100vh;
-      max-width: 100vw;
     }
   </style>
   <slot name="button">
@@ -147,9 +161,9 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   get #selectedValue() {
-    let selectedValue = this.querySelector('[behavior="selected-value"]');
+    let selectedValue = this.querySelector('[behavior=selected-value]');
     if (!selectedValue) {
-      selectedValue = this.shadowRoot.querySelector('[behavior="selected-value"]');
+      selectedValue = this.shadowRoot.querySelector('[behavior=selected-value]');
     }
     return selectedValue;
   }
@@ -277,14 +291,14 @@ class SelectMenuElement extends globalThis.HTMLElement {
       if (option.selected) {
 
         if (selectedOption && !this.multiple) {
-          selectedOption._setSelectedState(false);
+          selectedOption._setSelectedState?.(false);
         }
 
-        option._setSelectedState(true);
+        option._setSelectedState?.(true);
         selectedOption = option;
 
       } else {
-        option._setSelectedState(false);
+        option._setSelectedState?.(false);
       }
 
       if (!firstOption && !option.disabled) {
@@ -293,7 +307,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
     }
 
     if (!selectedOption && firstOption && !this.multiple) {
-      firstOption._setSelectedState(true);
+      firstOption._setSelectedState?.(true);
     }
 
     this.#selectionChanged();
@@ -448,45 +462,39 @@ class SelectMenuElement extends globalThis.HTMLElement {
     window.removeEventListener('resize', this.#handleReposition);
     window.removeEventListener('scroll', this.#handleReposition);
   }
-
 }
 
 function reposition(reference, popover) {
 
-  let { style } = getOrInsertCSSRule(
-    reference.shadowRoot, 
-    '[part="listbox"], ::slotted([behavior="listbox"])'
-  );
+  let { style } = getCSSRule(reference.shadowRoot,
+    'slot[name="listbox"], ::slotted([slot="listbox"])');
 
-  if (!style) style = popover.style;
-
-  style.removeProperty('height');
-  style.top = 'auto';
-  style.bottom = 'auto';
+  style.maxBlockSize = 'initial';
+  style.insetBlockStart = 'initial';
+  style.insetBlockEnd = 'initial';
 
   const container = { top: 0, height: window.innerHeight };
   const refBox = reference.getBoundingClientRect();
 
-  if (!style.minWidth) {
-    style.minWidth = `${refBox.width}px`;
-  }
-
-  style.top = `${refBox.bottom}px`;
+  style.minInlineSize = `${refBox.width}px`;
+  style.insetBlockStart = `${refBox.bottom}px`;
 
   let popBox = popover.getBoundingClientRect();
   
   const bottomOverflow = popBox.bottom - container.height;
   if (bottomOverflow > 0) {
 
+    let minHeightBeforeFlip = (reference.options[0]?.offsetHeight ?? 50) * 1.3;
     let newHeight = popBox.height - bottomOverflow;
-    if (newHeight > 100) {
 
-      style.height = `${newHeight}px`;
+    if (newHeight > minHeightBeforeFlip) {
+
+      style.maxBlockSize = `${newHeight}px`;
 
     } else {
 
-      style.top = 'auto';
-      style.bottom = `${container.height - refBox.top}px`;
+      style.insetBlockStart = 'auto';
+      style.insetBlockEnd = `${container.height - refBox.top}px`;
 
       popBox = popover.getBoundingClientRect();
 
@@ -494,21 +502,21 @@ function reposition(reference, popover) {
       newHeight = popBox.height - topOverflow;
       
       if (topOverflow > 0) {
-        style.top = container.top;
-        style.bottom = 'auto';
-        style.height = `${newHeight}px`;
+        style.insetBlockStart = container.top;
+        style.insetBlockEnd = 'auto';
+        style.maxBlockSize = `${newHeight}px`;
       }
     }
   }
 }
 
 /**
- * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * Get a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
  * @return {CSSStyleRule}
   */
-function getOrInsertCSSRule(styleParent, selectorText) {
+function getCSSRule(styleParent, selectorText) {
   let style;
   for (style of styleParent.querySelectorAll('style')) {
 

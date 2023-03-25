@@ -1,13 +1,10 @@
-const html = (raw, ...keys) => String.raw({ raw }, ...keys);
-
 const template = document.createElement('template');
 
-template.innerHTML = html`
+template.innerHTML = /* html */`
   <style>
     :host {
       display: block;
       list-style: none;
-      font: -webkit-small-control;
       line-height: revert;
       white-space: nowrap;
       min-height: 1.2em;
@@ -140,9 +137,11 @@ class OptionElement extends globalThis.HTMLElement {
     if (selected) {
       this.#selected = true;
       this.#internals.ariaSelected = 'true';
+      this.classList.add(':checked');
     } else {
       this.#selected = false;
       this.#internals.ariaSelected = 'false';
+      this.classList.remove(':checked');
     }
   }
 }
