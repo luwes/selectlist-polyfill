@@ -28,12 +28,15 @@ selectmenu and a polyfilled selectmenu with misaligned API's.
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill/src/selectmenu.min.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill/src/option.min.js"></script>
+
 <x-selectmenu>
   <x-option>Option 1</x-option>
   <x-option>Option 2</x-option>
   <x-option>Option 3</x-option>
 </x-selectmenu>
 ```
+
+[See all examples](https://selectmenu-polyfill.vercel.app/examples/)
 
 ## Caveats
 
