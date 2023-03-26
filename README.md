@@ -17,13 +17,22 @@ and use the learnings for the implementation in
 
 ## Usage [Codesandbox](https://codesandbox.io/s/selectmenu-polyfill-6qky7m?file=/index.html)
 
+Until the native `<selectmenu>` lands in one of the browsers it's recommended 
+to use the custom elements `<x-selectmenu>` and `<x-option>` directly and not
+use them as a polyfill. 
+
+This is to prevent breaking anything in the future 
+if the native `<selectmenu>` API would change and you would be running a native
+selectmenu and a polyfilled selectmenu with misaligned API's.
+
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill"></script>
-<selectmenu>
-  <option>Option 1</option>
-  <option>Option 2</option>
-  <option>Option 3</option>
-</selectmenu>
+<script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill/src/selectmenu.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill/src/option.min.js"></script>
+<x-selectmenu>
+  <x-option>Option 1</x-option>
+  <x-option>Option 2</x-option>
+  <x-option>Option 3</x-option>
+</x-selectmenu>
 ```
 
 ## Caveats
