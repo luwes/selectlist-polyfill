@@ -35,9 +35,6 @@ template.innerHTML = /* html */`
 `;
 
 class OptionElement extends globalThis.HTMLElement {
-  static formAssociated = true;
-  static observedAttributes = ['disabled', 'selected'];
-
   /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
   #dirty = false;
   #internals;
@@ -145,6 +142,11 @@ class OptionElement extends globalThis.HTMLElement {
     }
   }
 }
+
+// Define as an external static so esbuild doesn't add unnecessary transforms
+// see https://github.com/evanw/esbuild/issues/2416
+OptionElement.formAssociated = true;
+OptionElement.observedAttributes = ['disabled', 'selected'];
 
 if (!globalThis.customElements.get('x-option')) {
   globalThis.customElements.define('x-option', OptionElement);
