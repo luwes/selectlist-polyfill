@@ -1,3 +1,12 @@
+## [0.0.4](https://github.com/luwes/selectmenu-polyfill/compare/v0.0.3...v0.0.4) (2023-03-26)
+
+
+### Bug Fixes
+
+* optimize iife bundle output ([5bbe537](https://github.com/luwes/selectmenu-polyfill/commit/5bbe537fc5145b665e4ed5ccca8962aa55bee075))
+
+
+
 ## [0.0.3](https://github.com/luwes/selectmenu-polyfill/compare/v0.0.2...v0.0.3) (2023-03-25)
 
 
