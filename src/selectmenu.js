@@ -28,8 +28,7 @@ const listboxStyles = /* css */`
     min-block-size: 1lh;
     max-block-size: inherit;
     min-inline-size: inherit;
-    inset-block-start: inherit;
-    inset-block-end: inherit;
+    inset: inherit;
   }
 `;
 
@@ -449,10 +448,12 @@ class SelectMenuElement extends globalThis.HTMLElement {
     this.#buttonEl.focus();
     this.#internals.ariaExpanded = 'false';
 
-    if (this.#listboxEl.hidePopover) {
-      this.#listboxEl.hidePopover();
-    } else {
-      this.#listboxEl.classList.remove(':popover-open');
+    if (this.#isOpen()) {
+      if (this.#listboxEl.hidePopover) {
+        this.#listboxEl.hidePopover();
+      } else {
+        this.#listboxEl.classList.remove(':popover-open');
+      }
     }
 
     document.removeEventListener('click', this.#onBlur);
@@ -482,6 +483,8 @@ function reposition(reference, popover) {
   style.insetBlockStart = `${refBox.bottom}px`;
 
   let popBox = popover.getBoundingClientRect();
+
+  style.insetInlineStart = `${refBox.left}px`;
   
   const bottomOverflow = popBox.bottom - container.height;
   if (bottomOverflow > 0) {
