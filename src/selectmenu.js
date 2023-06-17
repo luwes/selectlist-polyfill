@@ -65,7 +65,7 @@ template.innerHTML = /* html */`
     [part="button"] {
       display: inline-flex;
       align-items: center;
-      background-color: white;
+      background-color: field;
       cursor: default;
       appearance: none;
       border-radius: .25em;
