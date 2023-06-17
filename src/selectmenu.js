@@ -368,7 +368,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
         return;
       }
 
-      if (!this.multiple) {
+      if (key === 'Enter' && !this.multiple) {
         this.#userSelect(currentOption);
         this.#hide();
       }
