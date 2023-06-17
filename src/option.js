@@ -7,12 +7,16 @@ template.innerHTML = /* html */`
       list-style: none;
       line-height: revert;
       white-space: nowrap;
+      white-space-collapse: collapse;
+      text-wrap: nowrap;
       min-height: 1.2em;
-      padding: 1px 2px;
+      padding: .25em;
+      font-size: .875em;
     }
 
     :host(:hover) {
-      background-color: lightgray;
+      background-color: selecteditem;
+      color: selecteditemtext;
       cursor: default;
       user-select: none;
     }

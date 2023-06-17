@@ -7,7 +7,7 @@ const popoverStyles = popoverSupported ? '' : /* css */`
   [popover] {
     position: fixed;
     z-index: 2147483647;
-    padding: 0.25em;
+    padding: .25em;
     width: fit-content;
     border: solid;
     background: canvas;
@@ -59,6 +59,7 @@ template.innerHTML = /* html */`
     :host {
       display: inline-block;
       position: relative;
+      font-size: .875em;
     }
 
     [part="button"] {
@@ -67,25 +68,32 @@ template.innerHTML = /* html */`
       background-color: white;
       cursor: default;
       appearance: none;
-      padding: 1px 3px;
+      border-radius: .25em;
+      padding: .25em;
       border-width: 1px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
       border-image: initial;
-      border-radius: 2px;
       color: buttontext;
       line-height: min(1.3em, 15px);
     }
 
     :host([disabled]) [part="button"] {
-      background-color: rgba(239, 239, 239, 0.3);
+      background-color: rgba(239, 239, 239, .3);
       color: graytext;
-      opacity: 0.7;
-      border-color: rgba(118, 118, 118, 0.3);
+      opacity: .7;
+      border-color: rgba(118, 118, 118, .3);
     }
 
     [part="marker"] {
+      height: 1em;
       margin-inline-start: 4px;
+      opacity: 1;
+      padding-bottom: 2px;
+      padding-inline-start: 3px;
+      padding-inline-end: 3px;
+      padding-top: 2px;
+      width: 1.2em;
     }
 
     slot[name="listbox"],
@@ -95,15 +103,15 @@ template.innerHTML = /* html */`
 
     [part="listbox"] {
       box-sizing: border-box;
-      box-shadow: rgba(0, 0, 0, 0.13) 0px 12.8px 28.8px,
-        rgba(0, 0, 0, 0.11) 0px 0px 9.2px;
+      box-shadow: rgba(0, 0, 0, .13) 0px 12.8px 28.8px,
+        rgba(0, 0, 0, .11) 0px 0px 9.2px;
       min-block-size: 1lh;
       border-width: 1px;
       border-style: solid;
-      border-color: rgba(0, 0, 0, 0.15);
+      border-color: rgba(0, 0, 0, .15);
       border-image: initial;
-      border-radius: 4px;
-      padding: 4px;
+      border-radius: .25em;
+      padding: .25em 0;
     }
   </style>
   <slot name="button">
@@ -112,8 +120,8 @@ template.innerHTML = /* html */`
         <div part="selected-value" behavior="selected-value"></div>
       </slot>
       <slot name="marker">
-        <svg part="marker" xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" viewBox="0 0 10 6">
-          <path stroke-linejoin="round" d="m1 1 4 4 4-4" stroke="currentColor" />
+        <svg part="marker" width="20" height="14" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6 L10 12 L 16 6" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
         </svg>
       </slot>
     </button>
