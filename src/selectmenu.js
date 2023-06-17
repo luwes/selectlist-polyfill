@@ -16,7 +16,7 @@ const popoverStyles = popoverSupported ? '' : /* css */`
     margin: auto;
   }
 
-  [popover]:not(.\\:open) {
+  [popover]:not(.\\:popover-open) {
     display: none;
   }
 `;
@@ -414,9 +414,9 @@ class SelectMenuElement extends globalThis.HTMLElement {
 
   #isOpen() {
     try {
-      return this.#listboxEl.matches(':open');
+      return this.#listboxEl.matches(':popover-open');
     } catch {
-      return this.#listboxEl.matches('.\\:open');
+      return this.#listboxEl.matches('.\\:popover-open');
     }
   }
 
@@ -426,7 +426,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
     if (this.#listboxEl.showPopover) {
       this.#listboxEl.showPopover();
     } else {
-      this.#listboxEl.classList.add(':open');
+      this.#listboxEl.classList.add(':popover-open');
     }
 
     reposition(this, this.#listboxEl);
@@ -452,7 +452,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
     if (this.#listboxEl.hidePopover) {
       this.#listboxEl.hidePopover();
     } else {
-      this.#listboxEl.classList.remove(':open');
+      this.#listboxEl.classList.remove(':popover-open');
     }
 
     document.removeEventListener('click', this.#onBlur);

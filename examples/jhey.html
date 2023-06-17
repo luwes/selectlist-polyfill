@@ -2,7 +2,7 @@
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/super-template"></script>
 <link rel="preload" href="./layout.html" as="fetch" crossorigin>
-<link rel="preload" href="https://fonts.gstatic.com/s/materialsymbolsoutlined/v100/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsLjBuVY.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://fonts.gstatic.com/s/materialsymbolsoutlined/v120/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsLjBuVY.woff2" as="font" type="font/woff2" crossorigin>
 
 <title>selectmenu polyfill</title>
 <script src="../dist/polyfill.js"></script>
@@ -47,7 +47,7 @@
         gap: var(--size-2);
       }
 
-      .selectmenu [popover]:is(:open, .\:open) {
+      .selectmenu [popover]:is(:popover-open, .\:popover-open) {
         transition: opacity 0.2s, translate 0.2s;
         --open: 1;
       }

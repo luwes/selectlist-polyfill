@@ -578,7 +578,7 @@
       });
 
       // Detecting if the popover is shown or hidden.
-      // There should be a :open pseudo-class in CSS to do this, but it doesn't
+      // There should be a :popover-open pseudo-class in CSS to do this, but it doesn't
       // seem to be implemented yet. There is :-internal-popover-hidden that could be
       // used, but for now, let's do our own thing using the show/hide events.
       combobox.addEventListener('popovershow', () => combobox.setAttribute('open', ''));
