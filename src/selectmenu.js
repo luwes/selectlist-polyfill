@@ -328,9 +328,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
     // Open / Close
     if (path.some(el => el === this.#buttonEl)) {
 
-      if (this.#isOpen()) {
-        this.#hide();
-      } else {
+      if (!this.#isOpen()) {
         this.#show();
       }
 
