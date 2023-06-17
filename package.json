@@ -23,8 +23,8 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "esbuild": "^0.17.11",
-    "wet-run": "^0.0.7"
+    "esbuild": "^0.18.4",
+    "wet-run": "^0.2.0"
   },
   "eslintConfig": {
     "root": true,

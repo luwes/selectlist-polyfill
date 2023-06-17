@@ -126,6 +126,8 @@ template.innerHTML = /* html */`
 `;
 
 class SelectMenuElement extends globalThis.HTMLElement {
+  static formAssociated = true;
+  static observedAttributes = ['disabled', 'required', 'multiple'];
   #internals;
 
   constructor() {
@@ -461,11 +463,6 @@ class SelectMenuElement extends globalThis.HTMLElement {
     window.removeEventListener('scroll', this.#handleReposition);
   }
 }
-
-// Define as an external static so esbuild doesn't add unnecessary transforms
-// see https://github.com/evanw/esbuild/issues/2416
-SelectMenuElement.formAssociated = true;
-SelectMenuElement.observedAttributes = ['disabled', 'required', 'multiple'];
 
 function reposition(reference, popover) {
 
