@@ -376,7 +376,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
       return;
     }
 
-    if (['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) {
+    if (this.#isOpen() && ['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) {
       // Prevent scrolling
       event.preventDefault();
 
