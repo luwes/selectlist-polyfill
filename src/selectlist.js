@@ -4,116 +4,110 @@ const popoverSupported = typeof HTMLElement !== 'undefined' &&
   'popover' in HTMLElement.prototype;
 
 const popoverStyles = popoverSupported ? '' : /* css */`
-  [popover] {
-    position: fixed;
-    z-index: 2147483647;
-    padding: .25em;
-    width: fit-content;
-    border: solid;
-    background: canvas;
-    color: canvastext;
-    overflow: auto;
-    margin: auto;
-  }
+[popover] {
+  position: fixed;
+  z-index: 2147483647;
+  padding: .25em;
+  width: fit-content;
+  border: solid;
+  background: canvas;
+  color: canvastext;
+  overflow: auto;
+  margin: auto;
+}
 
-  [popover]:not(.\\:popover-open) {
-    display: none;
-  }
-`;
+[popover]:not(.\\:popover-open) {
+  display: none;
+}
+`,
+  listboxStyles = /* css */`
+[behavior="listbox"] {
+  box-sizing: border-box;
+  margin: 0;
+  min-block-size: 1lh;
+  max-block-size: inherit;
+  min-inline-size: inherit;
+  inset: inherit;
+}
+`,
+  popoverStyleSheet = new CSSStyleSheet(),
+  listboxStyleSheet = new CSSStyleSheet(),
+  selectlistStyleSheet = new CSSStyleSheet(),
+  documentStyles = new CSSStyleSheet();
 
-const listboxStyles = /* css */`
-  [behavior="listbox"] {
-    box-sizing: border-box;
-    margin: 0;
-    min-block-size: 1lh;
-    max-block-size: inherit;
-    min-inline-size: inherit;
-    inset: inherit;
-  }
-`;
+popoverStyleSheet.replaceSync(popoverStyles);
+listboxStyleSheet.replaceSync(listboxStyles);
+
+selectlistStyleSheet.replaceSync(/* css */ `
+:host {
+  display: inline-block;
+  position: relative;
+  font-size: .875em;
+}
+
+[part="button"] {
+  display: inline-flex;
+  align-items: center;
+  background-color: field;
+  cursor: default;
+  appearance: none;
+  border-radius: .25em;
+  padding: .25em;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(118, 118, 118);
+  border-image: initial;
+  color: buttontext;
+  line-height: min(1.3em, 15px);
+}
+
+:host([disabled]) [part="button"] {
+  background-color: rgba(239, 239, 239, .3);
+  color: graytext;
+  opacity: .7;
+  border-color: rgba(118, 118, 118, .3);
+}
+
+[part="marker"] {
+  height: 1em;
+  margin-inline-start: 4px;
+  opacity: 1;
+  padding-bottom: 2px;
+  padding-inline-start: 3px;
+  padding-inline-end: 3px;
+  padding-top: 2px;
+  width: 1.2em;
+}
+
+[part="listbox"] {
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, .13) 0px 12.8px 28.8px,
+    rgba(0, 0, 0, .11) 0px 0px 9.2px;
+  min-block-size: 1lh;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, .15);
+  border-image: initial;
+  border-radius: .25em;
+  padding: .25em 0;
+}
+`);
 
 /**
  * CSS @layer: any styles declared outside of a layer will override styles
  * declared in a layer, regardless of specificity.
  * https://developer.mozilla.org/en-US/docs/Web/CSS/@layer
  */
+documentStyles.replaceSync(/* css */ `
+@layer {
+  ${popoverStyles}
+  x-selectlist ${listboxStyles}
+`);
 
-const headTemplate = document.createElement('template');
-headTemplate.innerHTML = /* html */`
-<style>
-  @layer {
-    ${popoverStyles}
-    x-selectlist ${listboxStyles}
-  }
-</style>
-`;
-
-document.head.prepend(headTemplate.content.cloneNode(true));
+document.adoptedStyleSheets.push(documentStyles);
 
 const template = document.createElement('template');
-template.innerHTML = /* html */`
-  <style>
-    ${popoverStyles}
-    ${listboxStyles}
-
-    :host {
-      display: inline-block;
-      position: relative;
-      font-size: .875em;
-    }
-
-    [part="button"] {
-      display: inline-flex;
-      align-items: center;
-      background-color: field;
-      cursor: default;
-      appearance: none;
-      border-radius: .25em;
-      padding: .25em;
-      border-width: 1px;
-      border-style: solid;
-      border-color: rgb(118, 118, 118);
-      border-image: initial;
-      color: buttontext;
-      line-height: min(1.3em, 15px);
-    }
-
-    :host([disabled]) [part="button"] {
-      background-color: rgba(239, 239, 239, .3);
-      color: graytext;
-      opacity: .7;
-      border-color: rgba(118, 118, 118, .3);
-    }
-
-    [part="marker"] {
-      height: 1em;
-      margin-inline-start: 4px;
-      opacity: 1;
-      padding-bottom: 2px;
-      padding-inline-start: 3px;
-      padding-inline-end: 3px;
-      padding-top: 2px;
-      width: 1.2em;
-    }
-
-    slot[name="listbox"],
-    ::slotted([slot="listbox"]) {
-      ${/* min-inline-size overridden below by selectlist width */''}
-    }
-
-    [part="listbox"] {
-      box-sizing: border-box;
-      box-shadow: rgba(0, 0, 0, .13) 0px 12.8px 28.8px,
-        rgba(0, 0, 0, .11) 0px 0px 9.2px;
-      min-block-size: 1lh;
-      border-width: 1px;
-      border-style: solid;
-      border-color: rgba(0, 0, 0, .15);
-      border-image: initial;
-      border-radius: .25em;
-      padding: .25em 0;
-    }
-  </style>
+template.innerHTML = /* html */ `
   <slot name="button">
     <button part="button" behavior="button" aria-haspopup="listbox">
       <slot name="selected-value">
@@ -136,7 +130,8 @@ template.innerHTML = /* html */`
 class SelectListElement extends globalThis.HTMLElement {
   static formAssociated = true;
   static observedAttributes = ['disabled', 'required', 'multiple'];
-  #internals;
+  #internals;  
+  #inlineSizeStyle = new CSSStyleSheet();
 
   constructor() {
     super();
@@ -149,6 +144,18 @@ class SelectListElement extends globalThis.HTMLElement {
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.append(template.content.cloneNode(true));
+    /* min-inline-size overridden below by selectlist width */
+    this.#inlineSizeStyle.insertRule(
+      'slot[name="listbox"], ::slotted([slot="listbox"]) {}',
+      0
+    );
+
+    this.shadowRoot.adoptedStyleSheets = [
+      popoverStyleSheet,
+      listboxStyleSheet,
+      selectlistStyleSheet,
+      this.#inlineSizeStyle,
+    ];
 
     this.addEventListener('click', this.#onClick, true);
     this.addEventListener('keydown', this.#onKeydown);
@@ -415,7 +422,7 @@ class SelectListElement extends globalThis.HTMLElement {
 
   #handleReposition = () => {
     if (this.#isOpen()) {
-      reposition(this, this.#listboxEl);
+      reposition(this, this.#listboxEl, this.#inlineSizeStyle);
     }
   }
 
@@ -436,7 +443,7 @@ class SelectListElement extends globalThis.HTMLElement {
       this.#listboxEl.classList.add(':popover-open');
     }
 
-    reposition(this, this.#listboxEl);
+    reposition(this, this.#listboxEl, this.#inlineSizeStyle);
 
     const activeOptions = this.options.filter(opt => !opt.disabled);
     const currentOption = this.selectedOption
@@ -470,10 +477,8 @@ class SelectListElement extends globalThis.HTMLElement {
   }
 }
 
-function reposition(reference, popover) {
-
-  let { style } = getCSSRule(reference.shadowRoot,
-    'slot[name="listbox"], ::slotted([slot="listbox"])');
+function reposition(reference, popover, inlineSizeStyle) {
+  let { style } = inlineSizeStyle.cssRules[0];
 
   style.maxBlockSize = 'initial';
   style.insetBlockStart = 'initial';
@@ -516,29 +521,6 @@ function reposition(reference, popover) {
       }
     }
   }
-}
-
-/**
- * Get a CSS rule with a selector in an element containing <style> tags.
- * @param  {Element|ShadowRoot} styleParent
- * @param  {string} selectorText
- * @return {CSSStyleRule}
-  */
-function getCSSRule(styleParent, selectorText) {
-  let style;
-  for (style of styleParent.querySelectorAll('style')) {
-
-    // Catch this error. e.g. browser extension adds style tags.
-    //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
-    //   Not allowed to access cross-origin stylesheet
-    let cssRules;
-    try { cssRules = style.sheet?.cssRules; } catch { continue; }
-
-    for (let rule of cssRules ?? [])
-      if (rule.selectorText === selectorText) return rule;
-  }
-
-  return {};
 }
 
 if (!globalThis.customElements.get('x-selectlist')) {
