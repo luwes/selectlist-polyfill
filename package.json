@@ -1,6 +1,6 @@
 {
   "name": "selectlist-polyfill",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Polyfill for the selectlist element",
   "type": "module",
   "main": "dist/polyfill.js",
