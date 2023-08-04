@@ -1,19 +1,19 @@
 {
-  "name": "selectmenu-polyfill",
+  "name": "selectlist-polyfill",
   "version": "0.1.1",
-  "description": "Polyfill for the selectmenu element",
+  "description": "Polyfill for the selectlist element",
   "type": "module",
   "main": "dist/polyfill.js",
   "files": [
     "src",
     "dist"
   ],
-  "repository": "luwes/selectmenu-polyfill",
+  "repository": "luwes/selectlist-polyfill",
   "author": "Wesley Luyten <me@wesleyluyten.com> (https://wesleyluyten.com)",
   "license": "MIT",
-  "homepage": "https://github.com/luwes/selectmenu-polyfill#readme",
+  "homepage": "https://github.com/luwes/selectlist-polyfill#readme",
   "bugs": {
-    "url": "https://github.com/luwes/selectmenu-polyfill/issues"
+    "url": "https://github.com/luwes/selectlist-polyfill/issues"
   },
   "scripts": {
     "lint": "npx eslint src/*.js",
@@ -44,7 +44,7 @@
     }
   },
   "keywords": [
-    "selectmenu",
+    "selectlist",
     "polyfill",
     "web component",
     "custom element"
