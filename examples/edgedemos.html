@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open UI's selectmenu demos</title>
+  <title>Open UI's selectlist demos</title>
   <link rel="icon" type="image/png" sizes="32x32" href="../shared/img/logo.png">
   <style>
     html {
@@ -43,12 +43,12 @@
 </head>
 <body>
   <header>
-    <h1>Open UI's <code>&lt;selectmenu&gt;</code> demos</h1>
-    <p>The purpose of the <a href="https://open-ui.org/">Open UI</a> group is to provide the web platform with UI controls that can be styled and extended by web developers. The <code>&lt;selectmenu&gt;</code> element is one of the early browser implementations of <a href="https://open-ui.org/components/select">the Open UI select specification</a>.</p>
-    <p class="info"><code>&lt;selectmenu&gt;</code> is available in Chromium-based browsers and requires a Canary version as well as the <em><strong>Experimental Web Platform features</strong></em> flag to be enabled in <strong>about:flags</strong>.</p>
-    <p>The demos below show how the <code>&lt;selectmenu&gt;</code> UI control can be used to achieve what was once only possible with custom selects.<br>
+    <h1>Open UI's <code>&lt;selectlist&gt;</code> demos</h1>
+    <p>The purpose of the <a href="https://open-ui.org/">Open UI</a> group is to provide the web platform with UI controls that can be styled and extended by web developers. The <code>&lt;selectlist&gt;</code> element is one of the early browser implementations of <a href="https://open-ui.org/components/select">the Open UI select specification</a>.</p>
+    <p class="info"><code>&lt;selectlist&gt;</code> is available in Chromium-based browsers and requires a Canary version as well as the <em><strong>Experimental Web Platform features</strong></em> flag to be enabled in <strong>about:flags</strong>.</p>
+    <p>The demos below show how the <code>&lt;selectlist&gt;</code> UI control can be used to achieve what was once only possible with custom selects.<br>
       The control is still in its early days and these demos have been made to find bugs with the implementation and limitations in the architecture. They are not complete and have bugs.</p>
-    <p class="info"><strong>Also note that some of the demos are not fully accessible.</strong> The experimental <code>&lt;selectmenu&gt;</code> control allows to go very far in extending its default behavior. Some of the demos extend and even replace the entire shadow DOM of the control in order to push the prototype to its limits. As a result some demos are inaccessible. <strong>These are currently serving as a way to provoke discussions aimed at evolving the specification and implementation.</strong></p>
+    <p class="info"><strong>Also note that some of the demos are not fully accessible.</strong> The experimental <code>&lt;selectlist&gt;</code> control allows to go very far in extending its default behavior. Some of the demos extend and even replace the entire shadow DOM of the control in order to push the prototype to its limits. As a result some demos are inaccessible. <strong>These are currently serving as a way to provoke discussions aimed at evolving the specification and implementation.</strong></p>
   </header>
 
   <div class="sample">
@@ -189,7 +189,7 @@
         clip-path: none;
       }
     </style>
-    <selectmenu class="bubble">
+    <selectlist class="bubble">
       <div class="anchor" slot="button" behavior="button">
         <span behavior="selected-value"></span>
       </div>
@@ -242,7 +242,7 @@
           </div>
         </div>
       </div>
-    </selectmenu>
+    </selectlist>
     <script>
       const bubbleSelect = document.querySelector('.bubble');
       const bubbleButton = bubbleSelect.querySelector('[slot="button"]');
@@ -268,7 +268,7 @@
       // On scroll, the popover won't move, because it's in the top-layer.
       // So the before/after pseudos we use to draw a curve between the listbox and the button
       // won't be positioned correctly anymore. So just hide them by setting a class on the
-      // selectmenu.
+      // selectlist.
       addEventListener('scroll', () => {
         bubbleSelect.classList.add('scrolled');
       });
@@ -359,7 +359,7 @@
         }
       }
     </style>
-    <selectmenu class="vertical-align">
+    <selectlist class="vertical-align">
       <button slot="button" behavior="button">
         <label>Vegetable</label>
         <span slot="selected-value" behavior="selected-value"></span>
@@ -374,7 +374,7 @@
         <option value="Pumpkin">Pumpkin</option>
         <option value="Pepper">Pepper</option>
       </div>
-    </selectmenu>
+    </selectlist>
     <script>
       const verticalAlignSelect = document.querySelector('.vertical-align');
       const verticalAlignButton = verticalAlignSelect.querySelector('button');
@@ -474,7 +474,7 @@
       }
     </style>
 
-    <selectmenu class="combobox">
+    <selectlist class="combobox">
       <button slot="button" behavior="button">
         <span behavior="selected-value" hidden></span>
         <span class="visible-value">Felids</span>
@@ -525,7 +525,7 @@
           <option value="Tiger">Tiger</option>
         </div>
       </div>
-    </selectmenu>
+    </selectlist>
 
     <script>
       const combobox = document.querySelector('.combobox');
@@ -691,7 +691,7 @@
       }
     </style>
 
-    <selectmenu class="multiselect">
+    <selectlist class="multiselect">
       <div slot="button" behavior="button">
         <ul class="selected-values"></ul>
       </div>
@@ -709,7 +709,7 @@
       <option value="Capsicum">Capsicum</option>
       <option value="Garlic">Garlic</option>
       <option value="Onions">Onions</option>
-    </selectmenu>
+    </selectlist>
 
     <script>
       const multiselect = document.querySelector('.multiselect');
@@ -851,7 +851,7 @@
       }
     </style>
 
-    <selectmenu class="gitpod">
+    <selectlist class="gitpod">
       <button slot="button" behavior="button">
         <span slot="selected-value" behavior="selected-value"></span>
       </button>
@@ -862,7 +862,7 @@
         New Team
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" class="w-3.5"><path fill="currentColor" fill-rule="evenodd" d="M7 0a1 1 0 011 1v5h5a1 1 0 110 2H8v5a1 1 0 11-2 0V8H1a1 1 0 010-2h5V1a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
       </option>
-    </selectmenu>
+    </selectlist>
   </div>
 
   <div class="sample">
@@ -908,7 +908,7 @@
       }
     </style>
 
-    <selectmenu class="scrollable">
+    <selectlist class="scrollable">
       <div popover slot="listbox" behavior="listbox">
         <div class="indicator before">▲</div>
         <div class="scroller">
@@ -1110,7 +1110,7 @@
         </div>
         <div class="indicator after">▼</div>
       </div>
-    </selectmenu>
+    </selectlist>
 
     <script>
       const scrollableSelect = document.querySelector('.scrollable');
@@ -1258,7 +1258,7 @@
         width: 12px;
       }
     </style>
-    <selectmenu class="gh-sort">
+    <selectlist class="gh-sort">
       <div popover slot="listbox" behavior="listbox">
         <header>Sort by</header>
         <div class="standard">
@@ -1281,7 +1281,7 @@
           <option value="looking"><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f440.png"></option>
         </div>
       </div>
-    </selectmenu>
+    </selectlist>
   </div>
 
   <div class="sample">
@@ -1326,12 +1326,12 @@
       }
 
       .dribbble-filters .filter button:hover,
-      .dribbble-filters .filter selectmenu:focus-within button {
+      .dribbble-filters .filter selectlist:focus-within button {
         color: black;
       }
 
       .dribbble-filters .filter button:hover,
-      .dribbble-filters .filter selectmenu:focus-within button:not(:active) {
+      .dribbble-filters .filter selectlist:focus-within button:not(:active) {
         box-shadow: 0 0 0 4px rgba(234, 76, 137, 0.1);
       }
 
@@ -1345,7 +1345,7 @@
         transition: transform .2s ease-in-out;
       }
 
-      .dribbble-filters .filter selectmenu:focus-within button::after {
+      .dribbble-filters .filter selectlist:focus-within button::after {
         transform: scaleY(-1);
       }
 
@@ -1430,7 +1430,7 @@
 
       <div class="filter" style="width:12rem;">
         <label for="timeframe-filter">Timeframe</label>
-        <selectmenu id="timeframe-filter">
+        <selectlist id="timeframe-filter">
           <div slot="button" behavior="button">
             <button behavior="selected-value"></button>
           </div>
@@ -1439,24 +1439,24 @@
           <option value="month">This Past Month</option>
           <option value="year">This Past Year</option>
           <option value="all">All Time</option>
-        </selectmenu>
+        </selectlist>
       </div>
 
       <div class="filter color-type" style="width:6rem;">
         <label for="color-filter">Color</label>
-        <selectmenu id="color-filter">
+        <selectlist id="color-filter">
           <div slot="button" behavior="button">
             <button behavior="selected-value"></button>
           </div>
           <option value="r" checked>Red</option>
           <option value="g">Green</option>
           <option value="b">Blue</option>
-        </selectmenu>
+        </selectlist>
       </div>
 
       <div class="filter browser-type" style="width:8rem;">
         <label for="browser-filter">Browser</label>
-        <selectmenu id="browser-filter">
+        <selectlist id="browser-filter">
           <div slot="button" behavior="button">
             <button behavior="selected-value"></button>
           </div>
@@ -1466,7 +1466,7 @@
           <option value="brave">Brave</option>
           <option value="safari">Safari</option>
           <option value="opera">Opera</option>
-        </selectmenu>
+        </selectlist>
       </div>
 
     </div>
@@ -1649,7 +1649,7 @@
     </style>
 
     <div class="word-toolbar">
-      <selectmenu class="word-color font-color" style="--selected-color:var(--initial-font-color);" title="Font color">
+      <selectlist class="word-color font-color" style="--selected-color:var(--initial-font-color);" title="Font color">
         <div slot="button">
           <button class="apply-button"></button>
           <button behavior="button" class="open-button"></button>
@@ -1664,9 +1664,9 @@
           <option class="action" value="none">No Color</option>
           <option class="action" value="more">More Colors...</option>
         </div>
-      </selectmenu>
+      </selectlist>
 
-      <selectmenu class="word-color background-color" style="--selected-color:var(--initial-background-color);" title="Shading">
+      <selectlist class="word-color background-color" style="--selected-color:var(--initial-background-color);" title="Shading">
         <div slot="button">
           <button class="apply-button"></button>
           <button behavior="button" class="open-button"></button>
@@ -1681,7 +1681,7 @@
           <option class="action" value="none">No Color</option>
           <option class="action" value="more">More Colors...</option>
         </div>
-      </selectmenu>
+      </selectlist>
 
       <span class="sample-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
     </div>

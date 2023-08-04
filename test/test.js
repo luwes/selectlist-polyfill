@@ -1,54 +1,54 @@
 import { test } from 'zora';
 
-test('selectmenu is an element', async function (t) {
-  const selectmenu = await fixture(`<x-selectmenu></x-selectmenu>`);
-  t.equal(selectmenu.localName, 'x-selectmenu');
+test('selectlist is an element', async function (t) {
+  const selectlist = await fixture(`<x-selectlist></x-selectlist>`);
+  t.equal(selectlist.localName, 'x-selectlist');
 });
 
-test('selectmenu selects the first option by default', async function (t) {
-  const selectmenu = await fixture(`
-    <x-selectmenu>
+test('selectlist selects the first option by default', async function (t) {
+  const selectlist = await fixture(`
+    <x-selectlist>
       <x-option>Option 1</x-option>
       <x-option>Option 2</x-option>
-    </x-selectmenu>`);
-  t.equal(selectmenu.value, 'Option 1');
-  t.equal(selectmenu.selectedIndex, 0);
+    </x-selectlist>`);
+  t.equal(selectlist.value, 'Option 1');
+  t.equal(selectlist.selectedIndex, 0);
 });
 
-test('selectmenu selects the option w/ selected attribute', async function (t) {
-  const selectmenu = await fixture(`
-    <x-selectmenu>
+test('selectlist selects the option w/ selected attribute', async function (t) {
+  const selectlist = await fixture(`
+    <x-selectlist>
       <x-option>Option 1</x-option>
       <x-option selected>Option 2</x-option>
-    </x-selectmenu>`);
-  t.equal(selectmenu.value, 'Option 2');
-  t.equal(selectmenu.selectedIndex, 1);
+    </x-selectlist>`);
+  t.equal(selectlist.value, 'Option 2');
+  t.equal(selectlist.selectedIndex, 1);
 });
 
-test('selectmenu.selectedIndex selects the option w/ index', async function (t) {
-  const selectmenu = await fixture(`
-    <x-selectmenu>
+test('selectlist.selectedIndex selects the option w/ index', async function (t) {
+  const selectlist = await fixture(`
+    <x-selectlist>
       <x-option>Option 1</x-option>
       <x-option>Option 2</x-option>
-    </x-selectmenu>`);
+    </x-selectlist>`);
 
-  selectmenu.selectedIndex = 1;
+  selectlist.selectedIndex = 1;
 
-  t.equal(selectmenu.value, 'Option 2');
-  t.equal(selectmenu.selectedIndex, 1);
+  t.equal(selectlist.value, 'Option 2');
+  t.equal(selectlist.selectedIndex, 1);
 });
 
-test('selectmenu.value selects the option w/ value', async function (t) {
-  const selectmenu = await fixture(`
-    <x-selectmenu>
+test('selectlist.value selects the option w/ value', async function (t) {
+  const selectlist = await fixture(`
+    <x-selectlist>
       <x-option>Option 1</x-option>
       <x-option>Option 2</x-option>
-    </x-selectmenu>`);
+    </x-selectlist>`);
 
-  selectmenu.value = 'Option 2';
+  selectlist.value = 'Option 2';
 
-  t.equal(selectmenu.value, 'Option 2');
-  t.equal(selectmenu.selectedIndex, 1);
+  t.equal(selectlist.value, 'Option 2');
+  t.equal(selectlist.selectedIndex, 1);
 });
 
 function delay(ms) {

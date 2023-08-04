@@ -1,19 +1,19 @@
-export { default as SelectMenuElement } from './selectmenu.js';
+export { default as SelectListElement } from './selectlist.js';
 export { default as OptionElement } from './option.js';
 
 
-if (!globalThis.HTMLSelectMenuElement) {
+if (!globalThis.HTMLSelectListElement) {
 
   // Firefox and Safari don't allow creating a shadow DOM
-  // on custom tags like `selectmenu` so replace `selectmenu`
-  // with a custom element `x-selectmenu`.
-  observeElement(document, 'selectmenu', (element) => {
-    element.replaceWith(convertElementToType(element, `x-selectmenu`));
+  // on custom tags like `selectlist` so replace `selectlist`
+  // with a custom element `x-selectlist`.
+  observeElement(document, 'selectlist', (element) => {
+    element.replaceWith(convertElementToType(element, `x-selectlist`));
   });
 
   // Safari doesn't render <option> content not nested in <select> :(
   observeElement(document, 'option', (element) => {
-    if (element.closest('x-selectmenu') || element.closest('selectmenu'))
+    if (element.closest('x-selectlist') || element.closest('selectlist'))
       element.replaceWith(convertElementToType(element, `x-option`));
   });
 }

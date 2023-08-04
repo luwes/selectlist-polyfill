@@ -1,4 +1,4 @@
-# `<selectmenu>` polyfill
+# `<selectlist>` polyfill
 
 Based on the proposal 
 [open-ui.org/components/selectmenu](https://open-ui.org/components/selectmenu/)
@@ -17,35 +17,35 @@ and use the learnings for the implementation in
 
 ## Usage [Codesandbox](https://codesandbox.io/s/selectmenu-polyfill-6qky7m?file=/index.html)
 
-Until the native `<selectmenu>` lands in one of the browsers it's recommended 
-to use the custom elements `<x-selectmenu>` and `<x-option>` directly and not
+Until the native `<selectlist>` lands in one of the browsers it's recommended 
+to use the custom elements `<x-selectlist>` and `<x-option>` directly and not
 use them as a polyfill. 
 
 This is to prevent breaking anything in the future 
-if the native `<selectmenu>` API would change and you would be running a native
-selectmenu and a polyfilled selectmenu with misaligned API's.
+if the native `<selectlist>` API would change and you would be running a native
+selectlist and a polyfilled selectlist with misaligned API's.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill/src/selectmenu.min.js"></script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/selectmenu-polyfill/src/option.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/selectlist-polyfill/src/selectlist.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/selectlist-polyfill/src/option.min.js"></script>
 
-<x-selectmenu>
+<x-selectlist>
   <x-option>Option 1</x-option>
   <x-option>Option 2</x-option>
   <x-option>Option 3</x-option>
-</x-selectmenu>
+</x-selectlist>
 ```
 
-[See all examples](https://selectmenu-polyfill.vercel.app/examples/)
+[See all examples](https://selectlist-polyfill.vercel.app/examples/)
 
 ## Caveats
 
 - Firefox and Safari don't allow creating a shadow DOM
-  on custom tags like `selectmenu` so the polyfill replaces `selectmenu` elements
-  with `x-selectmenu` elements via a mutation observer. If you prefer your elements
-are not replaced use `x-selectmenu` directly.
+  on custom tags like `selectlist` so the polyfill replaces `selectlist` elements
+  with `x-selectlist` elements via a mutation observer. If you prefer your elements
+are not replaced use `x-selectlist` directly.
 - Safari doesn't render `<option>` content not nested in `<select>` so `option`
-  elements nested under `x-selectmenu` are automatically replaced with `x-option` 
+  elements nested under `x-selectlist` are automatically replaced with `x-option` 
   elements. Again if you prefer to keep the element instance intact use `x-option`
   elements directly.
 - The native `<option>` has a `:checked` pseudo selector state. This is not possible to polyfill, 

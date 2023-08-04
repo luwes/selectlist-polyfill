@@ -4,7 +4,7 @@
 <link rel="preload" href="./layout.html" as="fetch" crossorigin>
 <link rel="preload" href="https://fonts.gstatic.com/s/materialsymbolsoutlined/v120/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsLjBuVY.woff2" as="font" type="font/woff2" crossorigin>
 
-<title>selectmenu polyfill</title>
+<title>selectlist polyfill</title>
 <script src="../dist/polyfill.js"></script>
 
 <template extends="./layout.html">
@@ -34,62 +34,62 @@
         background: var(--surface-1);
       }
 
-      .selectmenu [popover] {
+      .selectlist [popover] {
         border-radius: var(--radius-2);
         opacity: var(--open, 0);
         translate: 0 calc(var(--open, 0) * 5%);
         box-shadow: var(--shadow-5);
       }
 
-      .selectmenu [behavior="selected-value"] {
+      .selectlist [behavior="selected-value"] {
         display: flex;
         align-items: center;
         gap: var(--size-2);
       }
 
-      .selectmenu [popover]:is(:popover-open, .\:popover-open) {
+      .selectlist [popover]:is(:popover-open, .\:popover-open) {
         transition: opacity 0.2s, translate 0.2s;
         --open: 1;
       }
 
-      .selectmenu .option {
+      .selectlist .option {
         display: flex;
         align-items: center;
         gap: var(--size-2);
         padding: var(--size-2) var(--size-4);
       }
 
-      .selectmenu .option:hover {
+      .selectlist .option:hover {
         background-color: var(--surface-2);
       }
 
-      .selectmenu .option:is(:checked, .\:checked):not(:hover) {
+      .selectlist .option:is(:checked, .\:checked):not(:hover) {
         background: var(--surface-3);
       }
 
-      .selectmenu:has([value="tennis"]:is(:checked, .\:checked)) [behavior="selected-value"] i,
+      .selectlist:has([value="tennis"]:is(:checked, .\:checked)) [behavior="selected-value"] i,
       [value="tennis"] i {
         color: var(--green-6);
       }
 
-      .selectmenu:has([value="baseball"]:is(:checked, .\:checked)) [behavior="selected-value"] i,
+      .selectlist:has([value="baseball"]:is(:checked, .\:checked)) [behavior="selected-value"] i,
       [value="baseball"] i {
         color: var(--indigo-6);
       }
 
-      .selectmenu:has([value="football"]:is(:checked, .\:checked)) [behavior="selected-value"] i,
+      .selectlist:has([value="football"]:is(:checked, .\:checked)) [behavior="selected-value"] i,
       [value="football"] i {
         color: var(--red-4);
       }
 
-      .selectmenu:has([value="basketball"]:is(:checked, .\:checked))
+      .selectlist:has([value="basketball"]:is(:checked, .\:checked))
         [behavior="selected-value"]
         i,
       [value="basketball"] i {
         color: var(--orange-4);
       }
     </style>
-    <selectmenu class="selectmenu">
+    <selectlist class="selectlist">
       <div slot="button">
         <button behavior="button">
           <span behavior="selected-value"></span>
@@ -115,12 +115,12 @@
           </option>
         </div>
       </div>
-    </selectmenu>
+    </selectlist>
     <script type="module">
       // Wait 1 tick so the polyfill can replace the polyfilled elements if needed.
       await Promise.resolve();
 
-      const MENU = document.querySelector('.selectmenu')
+      const MENU = document.querySelector('.selectlist')
       const VALUE = MENU.querySelector('[behavior=selected-value]')
 
       const CLONE = () => {

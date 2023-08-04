@@ -3,7 +3,7 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/super-template"></script>
 <link rel="preload" href="./layout.html" as="fetch" crossorigin>
 
-<title>selectmenu polyfill</title>
+<title>selectlist polyfill</title>
 <script src="../dist/polyfill.js"></script>
 
 <template extends="./layout.html">
@@ -32,29 +32,29 @@
 
     <div>
       <h3>Default</h3>
-      <selectmenu id="pet">
+      <selectlist id="pet">
         <option>Option 1</option>
         <option>Option 2</option>
         <option>Option 3</option>
         <option>Option 4</option>
         <option>Option 5</option>
-      </selectmenu>
+      </selectlist>
 
-      <h3>Disabled selectmenu</h3>
-      <selectmenu disabled>
+      <h3>Disabled selectlist</h3>
+      <selectlist disabled>
         <option>Option 1</option>
         <option selected>Option 2</option>
         <option>Option 3</option>
         <option>Option 4</option>
         <option>Option 5</option>
-      </selectmenu>
+      </selectlist>
 
       <h3>Disabled option</h3>
-      <selectmenu>
+      <selectlist>
         <option disabled>Option 1</option>
         <option>Option 2</option>
         <option>Option 3</option>
-      </selectmenu>
+      </selectlist>
 
 
       <h3>Styling parts of the control</h3>
@@ -73,11 +73,11 @@
           border-radius: 5px;
         }
       </style>
-      <selectmenu class="my-select-menu">
+      <selectlist class="my-select-menu">
         <option>Option 1</option>
         <option>Option 2</option>
         <option>Option 3</option>
-      </selectmenu>
+      </selectlist>
 
 
       <h3>Use your own markup 1</h3>
@@ -101,7 +101,7 @@
           border-radius: 0 5px 5px 0;
         }
       </style>
-      <selectmenu class="my-custom-select">
+      <selectlist class="my-custom-select">
         <div slot="button">
           <button behavior="button">Open</button>
           <span class="label">Choose an option</span>
@@ -109,7 +109,7 @@
         <option>Option 1</option>
         <option>Option 2</option>
         <option>Option 3</option>
-      </selectmenu>
+      </selectlist>
 
       <h3>Use your own markup 2</h3>
       <style>
@@ -130,7 +130,7 @@
           display: grid;
         }
       </style>
-      <selectmenu class="my-custom-select2">
+      <selectlist class="my-custom-select2">
         <div popover slot="listbox" behavior="listbox">
           <option>Option 1</option>
           <option>Option 2</option>
@@ -138,7 +138,7 @@
           <option>Option 4</option>
           <option>Option 5</option>
         </div>
-      </selectmenu>
+      </selectlist>
     </div>
 
     <div>

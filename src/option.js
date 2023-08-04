@@ -78,12 +78,12 @@ class OptionElement extends globalThis.HTMLElement {
   }
 
   #ownerElement() {
-    return this.closest('x-selectmenu');
+    return this.closest('x-selectlist');
   }
 
   get index() {
-    const selectmenu = this.#ownerElement();
-    const index = selectmenu?.options.findIndex(option => option === this);
+    const selectlist = this.#ownerElement();
+    const index = selectlist?.options.findIndex(option => option === this);
     return index ?? 0;
   }
 

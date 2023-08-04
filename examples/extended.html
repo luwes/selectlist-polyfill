@@ -3,7 +3,7 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/super-template"></script>
 <link rel="preload" href="./layout.html" as="fetch" crossorigin>
 
-<title>selectmenu polyfill</title>
+<title>selectlist polyfill</title>
 <script src="../dist/polyfill.js"></script>
 
 <template extends="./layout.html">
@@ -44,7 +44,7 @@
         padding: 0.5rem;
       }
     </style>
-    <selectmenu class="my-custom-select">
+    <selectlist class="my-custom-select">
       <div slot="button">
         <span class="label">Choose a plant</span>
         <span behavior="selected-value" slot="selected-value"></span>
@@ -65,6 +65,6 @@
           <option>Giant sequoia</option>
         </div>
       </div>
-    </selectmenu>
+    </selectlist>
   </template>
 </template>

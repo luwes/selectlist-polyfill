@@ -43,7 +43,7 @@ headTemplate.innerHTML = /* html */`
 <style>
   @layer {
     ${popoverStyles}
-    x-selectmenu ${listboxStyles}
+    x-selectlist ${listboxStyles}
   }
 </style>
 `;
@@ -98,7 +98,7 @@ template.innerHTML = /* html */`
 
     slot[name="listbox"],
     ::slotted([slot="listbox"]) {
-      ${/* min-inline-size overridden below by selectmenu width */''}
+      ${/* min-inline-size overridden below by selectlist width */''}
     }
 
     [part="listbox"] {
@@ -133,7 +133,7 @@ template.innerHTML = /* html */`
   </slot>
 `;
 
-class SelectMenuElement extends globalThis.HTMLElement {
+class SelectListElement extends globalThis.HTMLElement {
   static formAssociated = true;
   static observedAttributes = ['disabled', 'required', 'multiple'];
   #internals;
@@ -284,7 +284,7 @@ class SelectMenuElement extends globalThis.HTMLElement {
   }
 
   /**
-   * Reset for a selectmenu is the selectedness setting algorithm.
+   * Reset for a selectlist is the selectedness setting algorithm.
    * Child Options's that are added and removed request this.
    * @see https://html.spec.whatwg.org/multipage/form-elements.html#selectedness-setting-algorithm
    */
@@ -541,8 +541,8 @@ function getCSSRule(styleParent, selectorText) {
   return {};
 }
 
-if (!globalThis.customElements.get('x-selectmenu')) {
-  globalThis.customElements.define('x-selectmenu', SelectMenuElement);
+if (!globalThis.customElements.get('x-selectlist')) {
+  globalThis.customElements.define('x-selectlist', SelectListElement);
 }
 
-export default SelectMenuElement;
+export default SelectListElement;
