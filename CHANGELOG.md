@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/luwes/selectlist-polyfill/compare/v0.1.1...v0.2.0) (2023-08-04)
+
+
+### Features
+
+* rename selectmenu to selectlist ([0a5966e](https://github.com/luwes/selectlist-polyfill/commit/0a5966e50ca7263e4fde53f208219ba97d2ed3ad))
+
+
+
 ## [0.1.1](https://github.com/luwes/selectmenu-polyfill/compare/v0.1.0...v0.1.1) (2023-06-17)
 
 
