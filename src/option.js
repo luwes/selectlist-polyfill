@@ -1,42 +1,44 @@
 const template = document.createElement('template');
 
 template.innerHTML = /* html */`
-  <style>
-    :host {
-      display: block;
-      list-style: none;
-      line-height: revert;
-      white-space: nowrap;
-      white-space-collapse: collapse;
-      text-wrap: nowrap;
-      min-height: 1.2em;
-      padding: .25em;
-      font-size: .875em;
-    }
-
-    :host(:hover) {
-      background-color: selecteditem;
-      color: selecteditemtext;
-      cursor: default;
-      user-select: none;
-    }
-
-    :host([disabled]) {
-      pointer-events: none;
-      color: rgba(16, 16, 16, 0.3);
-    }
-
-    :host(.\\:checked[disabled]) {
-      background-color: rgb(176, 176, 176);
-    }
-
-    :host(:focus-visible) {
-      outline: -webkit-focus-ring-color auto 1px;
-    }
-
-  </style>
   <slot></slot>
 `;
+
+const optionStyles = new CSSStyleSheet();
+
+optionStyles.replaceSync(/* css */`
+:host {
+  display: block;
+  list-style: none;
+  line-height: revert;
+  white-space: nowrap;
+  white-space-collapse: collapse;
+  text-wrap: nowrap;
+  min-height: 1.2em;
+  padding: .25em;
+  font-size: .875em;
+}
+
+:host(:hover) {
+  background-color: selecteditem;
+  color: selecteditemtext;
+  cursor: default;
+  user-select: none;
+}
+
+:host([disabled]) {
+  pointer-events: none;
+  color: rgba(16, 16, 16, 0.3);
+}
+
+:host(.\\:checked[disabled]) {
+  background-color: rgb(176, 176, 176);
+}
+
+:host(:focus-visible) {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+`);
 
 class OptionElement extends globalThis.HTMLElement {
   static formAssociated = true;
@@ -53,6 +55,7 @@ class OptionElement extends globalThis.HTMLElement {
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.append(template.content.cloneNode(true));
+    this.shadowRoot.adoptedStyleSheets = [optionStyles];
   }
 
   attributeChangedCallback(name, oldVal, newVal) {
